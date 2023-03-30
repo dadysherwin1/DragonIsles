@@ -19,14 +19,6 @@ const controls = new FlyControls(camera, renderer.domElement);
 // dragon
 const dragon = new Dragon(scene);
 
-// cube
-const geometry_cube = new THREE.BoxGeometry( 1, 1, 1 );
-const material_cube = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-material_cube.color = new THREE.Color(150/255,1,1);
-material_cube.wireframe = true;
-const cubeMesh = new THREE.Mesh(geometry_cube, material_cube);
-scene.add( cubeMesh );
-
 // Update
 function OnUpdate()
 {
