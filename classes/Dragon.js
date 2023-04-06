@@ -232,9 +232,7 @@ function CreateScene(scene)
 function ClearScene(scene)
 {
   scene.remove(head);
-  console.log(bodySegments.length);
   for (var i = 0; i < bodySegments.length; i++) {
-    console.log("YO");
     scene.remove(bodySegments[i]);
   }
   //scene.clear();
