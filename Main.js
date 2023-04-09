@@ -1,5 +1,5 @@
 import * as THREE from "../modules/three.module.js";
-import { FlyControls }  from "../modules/FlyControls.js";
+import { OrbitControls }  from "../modules/OrbitControls.js";
 import { Dragon } from "../classes/Dragon.js";
 import { World } from "../classes/WorldGen/World.js";
 
@@ -15,7 +15,7 @@ scene.add( camera );
 camera.position.set(0,0,25);
 
 // fly controls
-const controls = new FlyControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 
 // dragon
 const dragon = new Dragon(scene);
