@@ -9,7 +9,7 @@ var gui = new GUI();
 // var n = 10; //number of body segments (spread of wave)
 // var s = 3; //spacing
 // var h = 2; //heiht of wave
-// var p = 20; //speed of wave
+// var p = 20; //speed of wave/
 
 //creates the parameters for the body segments
 var creature = {
