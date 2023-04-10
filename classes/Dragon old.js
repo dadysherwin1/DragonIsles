@@ -14,13 +14,13 @@ var gui = new GUI();
 //creates the parameters for the body segments
 var creature = {
   n: 10,
-  s: 2,
+  s: 2.5,
   h: 2,
   p: 20,
 };
 //adds the GUI parameters onto the side 
 gui.add(creature, 'n', 3, 15, 1).name("Length:").listen();
-gui.add(creature, 's', 1, 3, 1 ).name("Spacing:").listen();
+gui.add(creature, 's', 1, 5 ).name("Spacing:").listen();
 gui.add(creature, 'h', 1, 4 ).name("Height:").listen();
 gui.add(creature, 'p', 5, 30).name("Speed:").listen();
 // Adds in the colour picker parameter
@@ -43,7 +43,7 @@ gui.addColor( colorFormats, 'belly' ).name("Belly color:").listen();
 var other = {
   randomise() {
     creature.n = getRndInteger(3,15);
-    creature.s = getRndInteger(1,3);
+    creature.s = getRnd(1,5);
     creature.h = getRnd(1,4);
     creature.p = getRnd(5,30);
     colorFormats.body = [Math.random(), Math.random(),Math.random() ]
@@ -84,13 +84,6 @@ var spike = new THREE.ConeGeometry(1,4,5);
 var bodySegments = [];
 var head;
 
-var frameRate = 10;
-var headXPos = [];
-var headYPos = [];
-var headZPos = [];
-var headY = 0;
-var headZ = 0;
-var headX = 0;
 
 //var subFrames = 10;
 var currFrame=0;
@@ -102,93 +95,18 @@ function UpdateColors(){ //updates the colors so that it automatically changes w
   material_belly.color = new THREE.Color(colorFormats.belly[0],colorFormats.belly[1],colorFormats.belly[2]);
 }
 
-function DrawSkull(){ //creates the circular skull
-  var skull = new THREE.Mesh(segment,material_segments);
-  return skull;
-}
-
-function DrawEyes(){ //creates the two eyes
-var eyes = [];
-
-var eye1 = new THREE.Mesh(eye,material_eyes);
-var eye2 = new THREE.Mesh(eye,material_eyes);
-
-//moves the eyes up vertically
-var traEY = new THREE.Matrix4();
-traEY.makeTranslation(0, 1, 0);
-eye1.applyMatrix4(traEY);
-eye2.applyMatrix4(traEY);
-
-//moves the eyes to correct z axis
-var traE = new THREE.Matrix4();
-var traE2 = new THREE.Matrix4();
-traE.makeTranslation(0, 0, 1);
-traE2.makeTranslation(0, 0, -1);
-eye1.applyMatrix4(traE);
-eye2.applyMatrix4(traE2);
-
-//adds the two eye meshes to the array
-eyes[0] = eye1;
-eyes[1] = eye2;
-
-return eyes;
-}
-
-function DrawJaw(){ //creates the jaw/mouth
-var jaw = new THREE.Mesh(jawObject, material_segments);
-
-//rotate the jaw 90 degrees
-var rotateJaw = new THREE.Matrix4();
-rotateJaw.makeRotationZ (-Math.PI/2);
-jaw.applyMatrix4(rotateJaw);
-
-//moves the jaw forward a little bit
-var traJ = new THREE.Matrix4();
-traJ.makeTranslation( (1.5), (0), (0) );
-jaw.applyMatrix4(traJ);
-
-return jaw;
-}
-
-//this function takes the inputted skull, jaw and eyes objects and adds them to a Object3D called head
-//this makes all the pieces CHILD objects of the head, meaning if we move and rotate the head, the child objects follow
-function DrawHead(scene, skull, jaw, eyes){ 
-head = new THREE.Object3D();
-
-head.add(skull);
-head.add(jaw);
-head.add(eyes[0]);
-head.add(eyes[1]);
-
-var traHead = new THREE.Matrix4();
-traHead.makeTranslation(headXPos[0], headYPos[0], headZPos[0]);
-head.applyMatrix4(traHead);
-//OLD CODE
-/**
-//rotates the whole head to make the animation movement look organic
-var rotHead = new THREE.Matrix4();
-
-rotHead.makeRotationZ ( ( (Math.cos((creature.n-1)+currFrame/creature.p)) /4 ) * creature.h); //using cos here because cos is the gradient function for sin.. 
-head.applyMatrix4(rotHead);                                                                   //this took me an embarassingly long time to figure out considering 
-                                                                                              //i did accelerated and three unit math for hsc
-//moves entire head to front of the body
-var traHead = new THREE.Matrix4();
-traHead.makeTranslation( ((creature.n-1)*creature.s) - (creature.s*(creature.n/2)), (creature.h*Math.sin((creature.n-1)+currFrame/creature.p)), (0) );
-head.applyMatrix4(traHead);**/
-
-scene.add(head); //adds the entire head to the scene
-}
-
 function DrawBodySegments(scene){ //creates all the body segments
   for (var i = 0; i<(creature.n-1); i++){
     var tra = new THREE.Matrix4();
-    tra.makeTranslation(headXPos[(i+1)*creature.s* frameRate], headYPos[(i+1)*creature.s* frameRate], headZPos[(i+1)*creature.s* frameRate]);  
+    var cubex = ((i*creature.s) - (creature.s*(creature.n/2)) ); //spreads segments out evenly
+    var cubey = creature.h*Math.sin(i+currFrame/creature.p); //moves segments up and down
+    tra.makeTranslation(cubex,cubey,0);  
 
-    /**rotates segments to make it look organic
+    //rotates segments to make it look organic
     var rot = new THREE.Matrix4();
     rot.makeRotationZ (( (Math.cos(i+currFrame/creature.p)) /4 ) *creature.h); //using cos here because cos is the gradient function for sin.. 
                                                                                 //this took me an embarassingly long time to figure out considering 
-                                                                                //i did accelerated and three unit math for hsc**/
+                                                                                //i did accelerated and three unit math for hsc
 
     bodySegments[i] = new THREE.Mesh(segment,material_segments); //adds a body segnemt to the i'th element in the bodySegments array
     scene.add(bodySegments[i]); //puts the body segment in the scene
@@ -209,7 +127,7 @@ function DrawBodySegments(scene){ //creates all the body segments
     bodySegments[i].add(bellySegment);
 
     //adds back spikes to 2/3rds of the body
-    if (i<(creature.n)/3){
+    if (i>(creature.n-1)/3){
       var backSpike = new THREE.Mesh(spike,material_spikes);
       scene.add(backSpike);
       //moves spike up a bit
@@ -222,80 +140,156 @@ function DrawBodySegments(scene){ //creates all the body segments
     }
     else{//scales a 3rd of the body for a tail
       var sca= new THREE.Matrix4();
-      var scaled = 1-(i-creature.n/3)*0.1;
+      var scaled = 0.6 + i*0.1;
       sca.makeScale(scaled, scaled, scaled);
       bodySegments[i].applyMatrix4(sca); //applies scale
     }
-    
-    var scaWhole = new THREE.Matrix4();
-    scaWhole.makeScale(0.9,0.9,0.9);
-    bodySegments[i].applyMatrix4(scaWhole);
-    // bodySegments[i].applyMatrix4(rot); //applies rotation to body (and belly / spikes)
+
+    bodySegments[i].applyMatrix4(rot); //applies rotation to body (and belly / spikes)
     bodySegments[i].applyMatrix4(tra); //applies translation to body (and belly / spikes)
   }
 }
 
-
-
-function moveHead(frameRate){
-  //if (currFrame % frameRate == 0){
-    //headX = headX + 0.1;
-  //}
+function DrawSkull(){ //creates the circular skull
+    var skull = new THREE.Mesh(segment,material_segments);
+    return skull;
 }
 
-document.onkeydown = function (e) {
-  if (e.keyCode === 38){
-    //up arrow
-    headY = headY + 0.2;
-  }
-  else if (e.keyCode === 39){
-    headX = headX + 0.2;
-  }
+function DrawEyes(){ //creates the two eyes
+  var eyes = [];
+
+  var eye1 = new THREE.Mesh(eye,material_eyes);
+  var eye2 = new THREE.Mesh(eye,material_eyes);
+
+  //moves the eyes up vertically
+  var traEY = new THREE.Matrix4();
+  traEY.makeTranslation(0, 1, 0);
+  eye1.applyMatrix4(traEY);
+  eye2.applyMatrix4(traEY);
+
+  //moves the eyes to correct z axis
+  var traE = new THREE.Matrix4();
+  var traE2 = new THREE.Matrix4();
+  traE.makeTranslation(0, 0, 1);
+  traE2.makeTranslation(0, 0, -1);
+  eye1.applyMatrix4(traE);
+  eye2.applyMatrix4(traE2);
+
+  //adds the two eye meshes to the array
+  eyes[0] = eye1;
+  eyes[1] = eye2;
+
+  return eyes;
+}
+
+function DrawJaw(){ //creates the jaw/mouth
+  var jaw = new THREE.Mesh(jawObject, material_segments);
+
+  //rotate the jaw 90 degrees
+  var rotateJaw = new THREE.Matrix4();
+  rotateJaw.makeRotationZ (-Math.PI/2);
+  jaw.applyMatrix4(rotateJaw);
+
+  //moves the jaw forward a little bit
+  var traJ = new THREE.Matrix4();
+  traJ.makeTranslation( (1.5), (0), (0) );
+  jaw.applyMatrix4(traJ);
+
+  return jaw;
+}
+
+//this function takes the inputted skull, jaw and eyes objects and adds them to a Object3D called head
+//this makes all the pieces CHILD objects of the head, meaning if we move and rotate the head, the child objects follow
+function DrawHead(scene, skull, jaw, eyes){ 
+  head = new THREE.Object3D();
+
+  head.add(skull);
+  head.add(jaw);
+  head.add(eyes[0]);
+  head.add(eyes[1]);
+
+  //rotates the whole head to make the animation movement look organic
+  var rotHead = new THREE.Matrix4();
   
+  rotHead.makeRotationZ ( ( (Math.cos((creature.n-1)+currFrame/creature.p)) /4 ) * creature.h); //using cos here because cos is the gradient function for sin.. 
+  head.applyMatrix4(rotHead);                                                                   //this took me an embarassingly long time to figure out considering 
+                                                                                                //i did accelerated and three unit math for hsc
+  //moves entire head to front of the body
+  var traHead = new THREE.Matrix4();
+  traHead.makeTranslation( ((creature.n-1)*creature.s) - (creature.s*(creature.n/2)), (creature.h*Math.sin((creature.n-1)+currFrame/creature.p)), (0) );
+  head.applyMatrix4(traHead);
+
+  scene.add(head); //adds the entire head to the scene
 }
 
 
 
-function updateHeadPositions(frameRate){
-  var arrayLength = creature.n * creature.s * frameRate;
-  //if (currFrame % frameRate == 0){
-    headXPos.unshift(headX);
-    headYPos.unshift(headY);
-    headZPos.unshift(headZ);
-    //headXPos.pop();
-    while (headXPos.length > arrayLength){
-      headXPos.pop();
-    }
-    while (headYPos.length > arrayLength){
-      headYPos.pop();
-    }
-    while (headZPos.length > arrayLength){
-      headZPos.pop();
-    }
-    console.log("x positions: " + headXPos);
-    console.log("y positions: " + headYPos);
-    console.log("z positions: " + headZPos);
-  //} 
-  
+ //NEW CODE FOR DRAWING A DRAGON MANS
+ var headX = 0;
+ var headY = 0;
+ var headZ = 0;
+ var head2;
+ var headXPos = [0,0,0];
+ var headYPos = [];
+ var headZPos = [];
+
+ var bodyS1;
+ var bodyS2;
+
+
+ //bodySegments[i].add(backSpike)
+
+ function MovingHead(scene){
+  head2 = new THREE.Mesh(segment,material_segments);
+  var moveHead = new THREE.Matrix4();
+  moveHead.makeTranslation(headX, headY, headZ);
+  head2.applyMatrix4(moveHead);
+  scene.add(head2);
+  if (currFrame%10==0){ //update every 10 frames
+    headXPos.unshift(head2.position.x);
+    headXPos.pop();
+    //console.log(headXPos);
+    console.log("second position: " + headXPos[1]);
+    console.log("third position: " + headXPos[2]);
+    headX++;
+  }
+}
+
+function createTrailingSegments(scene){
+  bodyS1 = new THREE.Mesh(segment,material_segments);
+  var moveBody = new THREE.Matrix4();
+  moveBody.makeTranslation(headXPos[1], headY, headZ);
+  bodyS1.applyMatrix4(moveBody);
+  scene.add(bodyS1);
+
+  bodyS2 = new THREE.Mesh(segment,material_segments);
+  var moveBody2 = new THREE.Matrix4();
+  moveBody2.makeTranslation(headXPos[2], headY, headZ);
+  bodyS1.applyMatrix4(moveBody2);
+  scene.add(bodyS2);
 }
 
 function CreateScene(scene)
 {
   UpdateColors();
+  //DrawBodySegments(scene);
+  //DrawHead(scene, DrawSkull(), DrawJaw(), DrawEyes());
 
-  moveHead(frameRate);//see this method for description
-  updateHeadPositions(frameRate);
-  DrawHead(scene, DrawSkull(), DrawJaw(), DrawEyes());
-  DrawBodySegments(scene);  
+  createTrailingSegments(scene);
+  MovingHead(scene);
+  
 }
 
 //function to clear the scene
 function ClearScene(scene)
 {
-  scene.remove(head);
-  for (var i = 0; i < bodySegments.length; i++) {
-    scene.remove(bodySegments[i]);
-  }
+  //scene.remove(head);
+  scene.remove(head2);
+  scene.remove(bodyS1);
+  scene.remove(bodyS2);
+  //for (var i = 0; i < bodySegments.length; i++) {
+  //  scene.remove(bodySegments[i]);
+  //}
   
 }
 
