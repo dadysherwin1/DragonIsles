@@ -221,11 +221,25 @@ function DrawHead(scene, skull, jaw, eyes){
   scene.add(head); //adds the entire head to the scene
 }
 
+
+
+ //NEW CODE FOR DRAWING A DRAGON MANS
+
+ function MovingHead(scene){
+  var head2 = new THREE.Mesh(segment,material_segments);
+  var moveDown = new THREE.Matrix4();
+  moveDown.makeTranslation(0, -8, 0);
+  head2.applyMatrix4(moveDown);
+  scene.add(head2);
+}
+
 function CreateScene(scene)
 {
   UpdateColors();
   DrawBodySegments(scene);
   DrawHead(scene, DrawSkull(), DrawJaw(), DrawEyes());
+
+  MovingHead(scene);
 }
 
 //function to clear the scene
