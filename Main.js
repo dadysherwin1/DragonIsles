@@ -21,8 +21,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 const dragon = new Dragon(scene);
 
 // world
-const world = new World();
-world.Generate(scene);
+const world = new World(scene);
 
 // Update
 function OnUpdate()
