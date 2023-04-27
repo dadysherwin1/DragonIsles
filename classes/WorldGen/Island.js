@@ -1,4 +1,5 @@
 import * as THREE from '../../modules/three.module.js';
+// import { Perlin } from './Perlin.js';
 
 class Island {
 
@@ -15,29 +16,52 @@ class Island {
             return x*subd+y;
         }
 
+        function IsPointInCircle(x,y,radius) {
+            return Math.sqrt(Math.pow(x-radius,2) + Math.pow(y-radius,2)) <= radius;
+        }
+
         // geometry
         const geometry = new THREE.BufferGeometry();
         const vertices = [];
         const indices = [];
-        const size = 10;
-        const subd = 10;
-        for (var i = 0; i < 10; i++) {
-            for (var j = 0; j < 10; j++) {
-                var vertice = new THREE.Vector3(i*size, 0, j*size);
+        const size = 100;
+        const subd = 50;
+        for (var x = 0; x < subd; x++) {
+            for (var y = 0; y < subd; y++) {
+                // if (Math.abs(x - 4.5) == 4.5 && Math.abs(y - 4.5) == 4.5) {
+                //     continue;
+                // }
+                // if (x == 0 && y == 0) {
+                //     continue;
+                // }
+
+                var vertice = new THREE.Vector3(x*size/subd, 0, y*size/subd);
                 vertice.x -= size/2;
                 vertice.z -= size/2;
-                if (i != 0 && i != 9 && j != 0 && j != 9) {
-                    vertice.y = Math.random() * size * yMultiplier;
-                }
+                // if (IsPointInCircle(x,y,(subd-1)/2)) {
+                //     // corner  vertice
+                // }
+
+
+                // if (IsPointInCircle(x-3, y-3,(subd)/3)) {
+                    vertice.y = Math.random() * size/50 * yMultiplier; // inner vertice
+                // }
                 vertices.push(vertice.x, vertice.y, vertice.z);
             }
         }
-        for (var i = 0; i < 10-1; i++) {
-            for (var j = 0; j < 10-1; j++) {
-                var Idx0=AccessGrid(i,j,subd);
-                var Idx1=AccessGrid(i+1,j,subd);
-                var Idx2=AccessGrid(i+1,j+1,subd);
-                var Idx3=AccessGrid(i,j+1,subd);
+        for (var x = 0; x < subd-1; x++) {
+            for (var y = 0; y < subd-1; y++) {
+                if (!IsPointInCircle(x,y,(subd-2)/2,0,0)) {
+                    continue;
+                }
+                // if (x == 0 && y == 0) {
+                //     continue;
+                // }
+
+                var Idx0=AccessGrid(x,y,subd);
+                var Idx1=AccessGrid(x+1,y,subd);
+                var Idx2=AccessGrid(x+1,y+1,subd);
+                var Idx3=AccessGrid(x,y+1,subd);
                 
                 indices.push(Idx1, Idx0, Idx2);
                 indices.push(Idx2, Idx0, Idx3);
@@ -49,6 +73,7 @@ class Island {
         // material
         const material = new THREE.MeshBasicMaterial({color: color});
         material.side = (yMultiplier >= 0 ? THREE.FrontSide : THREE.BackSide);
+        // material.side = THREE.BackSide;
         
         // mesh
         var surface = new THREE.Mesh( geometry, material );
