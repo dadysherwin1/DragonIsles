@@ -9,8 +9,7 @@ class World {
     constructor(scene) {
         // for (var i = 0; i < frequency; i++) {
             const chunk = this.CreateChunk();
-            scene.add(chunk.grass);
-            scene.add(chunk.rock);
+            scene.add(chunk.model);
         // }
     }
 

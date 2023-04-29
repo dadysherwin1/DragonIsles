@@ -12,6 +12,7 @@ class Chunk{
     killHeight = 1 - (this.islandFrequency * 2);
     constructor(pos)
     {
+        this.model = new THREE.Object3D();
         this.CreateIslands(pos);
     }
 
@@ -113,8 +114,8 @@ class Chunk{
         rockMesh.position.y = pos.y;
         rockMesh.position.z = pos.z;
 
-        this.grass = grassMesh;
-        this.rock = rockMesh;
+        this.model.add(grassMesh);
+        this.model.add(rockMesh);
     }
 
 }
