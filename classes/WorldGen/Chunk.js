@@ -16,43 +16,13 @@ class Chunk{
     }
 
     CreateIslands(pos) {
-
-        // original method
-        // const geometry = new THREE.PlaneGeometry(this.chunkSize, this.chunkSize, this.verticesPerChunk, this.verticesPerChunk);
-        // console.log(geometry);
-        // var perlin = new Perlin();
-        // var peak = 10;
-        // var smoothing = 70;
-        // // alter vertices
-        // var vertices = geometry.attributes.position.array;
-        // console.log(vertices);
-        // vertices = Array.from(vertices); // convert from TypedArray to Array
-        // for (var i = 0; i < vertices.length; i += 3) {
-        //     var height = peak * perlin.noise(
-        //         (vertices[i])/smoothing, 
-        //         (vertices[i+1])/smoothing
-        //     );
-
-        //     // if (height < 0) {
-        //     //     vertices.splice(i, 3);
-        //     //     i-=3;
-        //     // }
-        //     // else {
-        //         vertices[i+2] = height;
-        //     // }
-        // }
-        // vertices = Float32Array.from(vertices);
-        // console.log(vertices);
-        // geometry.attributes.position.array = vertices;
-        // geometry.attributes.position.needsUpdate = true;
-        // geometry.computeVertexNormals();
-
-
         const grass = new THREE.BufferGeometry();
         const rock = new THREE.BufferGeometry();
         const vertices = [];
         const rockVertices = [];
         const indices = [];
+
+        // set vertices
         for (var x = 0; x < this.subd; x++) {
             for (var y = 0; y < this.subd; y++) {
                 var vertice = new THREE.Vector3(x/this.subd*this.size, 0, y/this.subd*this.size);
@@ -60,14 +30,18 @@ class Chunk{
                 vertice.z -= this.size/2;
                 var unscaledHeight = this.perlin.noise(x, y)
                 var rockHeight = -Math.random()*50
-                if (unscaledHeight < this.killHeight) {  // mark vertices below the line
+                if (unscaledHeight < this.killHeight) {  // bad vertice
                     vertice.y = -1;
                 }
-                else {  // scale up vertices to maxHeight
+                else {  // good vertice
+                    // scale up vertices to maxHeight
                     vertice.y = (unscaledHeight - this.killHeight) * (this.maxHeight/this.killHeight)
                     if (unscaledHeight - 0.03 < this.killHeight) {
                         rockHeight = vertice.y - 0.1 //-vertice.y //- (unscaledHeight - this.killHeight) * 50;
                     }
+
+                    // you'd probably want to spawn a tree here
+
                 }
 
                 vertices.push(vertice.x, vertice.y, vertice.z);
@@ -75,6 +49,7 @@ class Chunk{
             }
         }
 
+        // set faces
         function AccessGrid(x,y,subd) {
             return x*subd+y;
         }
@@ -117,11 +92,6 @@ class Chunk{
                 }
             }
         }
-        grass.setIndex(indices);
-        rock.setIndex(indices);
-        grass.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-        rock.setAttribute('position', new THREE.Float32BufferAttribute(rockVertices, 3));
-
 
         // material
         const grassMaterial = new THREE.MeshBasicMaterial({color: new THREE.Color(0,100/255,0)});
@@ -130,16 +100,20 @@ class Chunk{
         rockMaterial.side = THREE.BackSide;
         
         // mesh
+        grass.setIndex(indices);
+        rock.setIndex(indices);
+        grass.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        rock.setAttribute('position', new THREE.Float32BufferAttribute(rockVertices, 3));
         var grassMesh = new THREE.Mesh(grass, grassMaterial);
         grassMesh.position.x = pos.x;
         grassMesh.position.y = pos.y;
         grassMesh.position.z = pos.z;
-        this.grass = grassMesh;
-
         var rockMesh = new THREE.Mesh(rock, rockMaterial);
         rockMesh.position.x = pos.x;
         rockMesh.position.y = pos.y;
         rockMesh.position.z = pos.z;
+
+        this.grass = grassMesh;
         this.rock = rockMesh;
     }
 
