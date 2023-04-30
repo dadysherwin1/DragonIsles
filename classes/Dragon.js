@@ -1,6 +1,7 @@
 //import necessary libraries
 import * as THREE from '../modules/three.module.js';
 import GUI from '../modules/lil-gui.module.min.js';
+import { Orbiter } from '../classes/Orbiter.js';
 
 //create the GUI sliders
 var gui = new GUI();
@@ -219,13 +220,14 @@ function DrawHead(scene, skull, jaw, eyes){
   head.applyMatrix4(traHead);
 
   scene.add(head); //adds the entire head to the scene
+  return head;
 }
 
 function CreateScene(scene)
 {
   UpdateColors();
   DrawBodySegments(scene);
-  DrawHead(scene, DrawSkull(), DrawJaw(), DrawEyes());
+  return DrawHead(scene, DrawSkull(), DrawJaw(), DrawEyes());
 }
 
 //function to clear the scene
@@ -242,15 +244,18 @@ function ClearScene(scene)
 class Dragon {
   constructor(scene)
   {
-    CreateScene(scene);
+    var head = CreateScene(scene);
+    this.orbiter = new Orbiter(head, new THREE.Vector3(0,0,0), 10);
   }  
 
   OnUpdate(scene)
   {
-    ClearScene(scene);
-    //currFrame = (currFrame + 1)%subFrames;
-    currFrame = (currFrame + 1);
-    CreateScene(scene);
+    // ClearScene(scene);
+    // //currFrame = (currFrame + 1)%subFrames;
+    // currFrame = (currFrame + 1);
+    // CreateScene(scene);
+
+    this.orbiter.onUpdate();
   }
 }
 
