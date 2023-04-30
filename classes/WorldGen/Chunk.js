@@ -1,4 +1,5 @@
 import * as THREE from '../../modules/three.module.js';
+import {Tree} from './Tree.js';
 import {Perlin} from './Perlin.js';
 
 class Chunk{
@@ -40,8 +41,11 @@ class Chunk{
                     if (unscaledHeight - 0.03 < this.killHeight) {
                         rockHeight = vertice.y - 0.1 //-vertice.y //- (unscaledHeight - this.killHeight) * 50;
                     }
-
-                    // you'd probably want to spawn a tree here
+                    //Randomly place tree and checks if tree would be on the edge of a chunk
+                    else if(Math.random() < (1/this.subd) && unscaledHeight -0.06 > this.killHeight)                
+                    {                                               
+                        this.model.add(new Tree(vertice).model);  //Adds tree to chunk  
+                    }
 
                 }
 
