@@ -11,7 +11,8 @@ class Chunk{
     static maxHeight = 50;
     static avgIslandSize = 350;
 
-    static killHeight = 1 - (Chunk.islandFreq * 2); // dont touch
+    // dont touch
+    static killHeight = 1 - (Chunk.islandFreq * 2);
 
     constructor(pos)
     {
@@ -34,6 +35,7 @@ class Chunk{
         var rockVertices = [];
         const indices = [];
 
+        // keep regening until there's good islands
         while (true) {
             var goodIslands = true;
 
@@ -52,6 +54,8 @@ class Chunk{
                         vertice.y = -1;
                     }
                     else if (x == 0 || y == 0 || x == Chunk.subd-1 || y == Chunk.subd-1) {
+                        // a vertice is on the edge of the chunk, meaning an island got sliced!
+                        // time to regen
                         goodIslands = false;
                         this.perlin = new Perlin(Chunk.avgIslandSize);
                         break;
@@ -77,13 +81,13 @@ class Chunk{
                         vertice.y = perlinHeight - Chunk.killHeight; // 
                         vertice.y *= Chunk.maxHeight/(1-Chunk.killHeight); // [0, Chunk.maxHeight]
 
+                        // set rock vertice position
                         if (vertice.y > 0) {
                             do {
                                 rockHeight = -vertice.y * 1.8 + (Math.random() * 18 - 9)
                             }
                             while (rockHeight > 0);
                         }
-
                     }
 
                     vertices.push(vertice.x, vertice.y, vertice.z);
@@ -95,13 +99,16 @@ class Chunk{
             if (goodIslands) {
                 break;
             }
-
             // otherwise, regen the islands
-            vertices = [];
-            rockVertices = [];
+            else {
+                vertices = [];
+                rockVertices = [];
+            }
+
+            
         }
 
-        //Randomly place tree and checks if tree would be on the edge of a chunk
+        // Randomly place tree and checks if tree would be on the edge of a chunk
         for (var i = 0; i < vertices.length; i += 3) {
             const x = vertices[i];
             const y = vertices[i+1];
