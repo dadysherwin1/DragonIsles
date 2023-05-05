@@ -84,16 +84,15 @@ var spike = new THREE.ConeGeometry(1,4,5);
 //variables for some bodyparts (SHERWIN ADDED THIS)
 var bodySegments = [];
 
-var frameRate = 10;
+var updateRate = 10;
 var headXPos = [];
 var headYPos = [];
 var headZPos = [];
-var headY = 0;
-var headZ = 0;
-var headX = 0;
+var headXRot = [];
+var headYRot = [];
+var headZRot = [];
 
-//var subFrames = 10;
-var currFrame=0;
+
 
 function UpdateColors(){ //updates the colors so that it automatically changes when you edit the colors in the GUI
   material_segments.color = new THREE.Color(colorFormats.body[0],colorFormats.body[1],colorFormats.body[2]);
@@ -182,8 +181,8 @@ function DrawHead(scene, skull, jaw, eyes){
 
 function DrawBodySegments(scene){ //creates all the body segments
   for (var i = 0; i<(creature.n-1); i++){
-    var tra = new THREE.Matrix4();
-    tra.makeTranslation(headXPos[(i+1)*creature.s* frameRate], headYPos[(i+1)*creature.s* frameRate], headZPos[(i+1)*creature.s* frameRate]);  
+    // var tra = new THREE.Matrix4();
+    // tra.makeTranslation(headXPos[(i+1)*creature.s* frameRate], headYPos[(i+1)*creature.s* frameRate], headZPos[(i+1)*creature.s* frameRate]);  
 
     /**rotates segments to make it look organic
     var rot = new THREE.Matrix4();
@@ -192,9 +191,11 @@ function DrawBodySegments(scene){ //creates all the body segments
                                                                                 //i did accelerated and three unit math for hsc**/
 
     bodySegments[i] = new THREE.Mesh(segment,material_segments); //adds a body segnemt to the i'th element in the bodySegments array
-    scene.add(bodySegments[i]); //puts the body segment in the scene
+    //scene.add(bodySegments[i]); //puts the body segment in the scene
     
-    //adds belly colour
+    /**
+     *  BELLY SEGMENTS
+     *///adds belly colour
     var bellySegment = new THREE.Mesh(segment, material_belly);
     //moves the belly piece down a bit
     var transB = new THREE.Matrix4();
@@ -205,19 +206,19 @@ function DrawBodySegments(scene){ //creates all the body segments
     scaB.makeScale(0.9,0.9,0.9);
     bellySegment.applyMatrix4(scaB);
     //adds the belly segment to the scene
-    scene.add(bellySegment);
+    //scene.add(bellySegment);
     //adds the belly segment as a child object to the current body segment so that any rotation done to the body effects the belly
     bodySegments[i].add(bellySegment);
-
-    //adds back spikes to 2/3rds of the body
+    /**
+     *  BACK SPIKES/TAIL
+     *///adds back spikes to 2/3rds of the body
     if (i<(creature.n)/3){
       var backSpike = new THREE.Mesh(spike,material_spikes);
-      scene.add(backSpike);
+      //scene.add(backSpike);
       //moves spike up a bit
       var traSpike = new THREE.Matrix4();
       traSpike.makeTranslation(0,1,0);
       backSpike.applyMatrix4(traSpike);
-
       //adds the spike as a child object to the current body segment so that any rotation done to the body effects the spike
       bodySegments[i].add(backSpike);
     }
@@ -232,52 +233,63 @@ function DrawBodySegments(scene){ //creates all the body segments
     scaWhole.makeScale(0.9,0.9,0.9);
     bodySegments[i].applyMatrix4(scaWhole);
     // bodySegments[i].applyMatrix4(rot); //applies rotation to body (and belly / spikes)
-    bodySegments[i].applyMatrix4(tra); //applies translation to body (and belly / spikes)
+    // bodySegments[i].applyMatrix4(tra); //applies translation to body (and belly / spikes)
+
+    scene.add(bodySegments[i]);
   }
+  //scene.add(bodySegments);
+  return bodySegments;
 }
 
-
-
-function moveHead(frameRate){
-  //if (currFrame % frameRate == 0){
-    //headX = headX + 0.1;
-  //}
-}
-
-document.onkeydown = function (e) {
-  if (e.keyCode === 38){
-    //up arrow
-    headY = headY + 0.2;
-  }
-  else if (e.keyCode === 39){
-    headX = headX + 0.2;
-  }
-  
-}
-
-
-
-function updateHeadPositions(head, frameRate){
-  var arrayLength = creature.n * creature.s * frameRate;
-  //if (currFrame % frameRate == 0){
+function updateHeadPositions(head, updateRate){
+  var arrayLength = creature.n * creature.s * updateRate;
+  //if (currFrame % updateRate == 0){
     headXPos.unshift(head.position.x);
     headYPos.unshift(head.position.y);
     headZPos.unshift(head.position.z);
-    //headXPos.pop();
-    while (headXPos.length > arrayLength){
-      headXPos.pop();
-    }
-    while (headYPos.length > arrayLength){
-      headYPos.pop();
-    }
-    while (headZPos.length > arrayLength){
-      headZPos.pop();
-    }
-    console.log("x positions: " + headXPos);
-    console.log("y positions: " + headYPos);
-    console.log("z positions: " + headZPos);
-  //} 
-  
+    checkArrayLength(headXPos, arrayLength);
+    checkArrayLength(headYPos, arrayLength);
+    checkArrayLength(headZPos, arrayLength);
+
+}
+
+function updateHeadRotations(head, updateRate){
+  var arrayLength = creature.n * creature.s * updateRate;
+  var xrot = Math.atan2(headZPos[0]-headZPos[1],headYPos[0]-headYPos[1]) - Math.PI/2 ;
+  var yrot = Math.atan2(headXPos[0]-headXPos[1],headZPos[0]-headZPos[1]) - Math.PI/2;
+  var zrot = Math.atan2(headXPos[0]-headXPos[1], headYPos[0]-headYPos[1]) - Math.PI/2;
+  headXRot.unshift(xrot);
+  headYRot.unshift(yrot);
+  headZRot.unshift(zrot);
+  checkArrayLength(headXRot, arrayLength);
+  checkArrayLength(headYRot, arrayLength);
+  checkArrayLength(headZRot, arrayLength);
+}
+
+function checkArrayLength(array, maxLength){
+  while (array.length > maxLength){
+    array.pop();
+  }
+}
+
+function positionBodySegments(){
+  for (var i = 0; i<(bodySegments.length); i++){
+    var offset = (i+1)*creature.s* updateRate;
+    bodySegments[i].position.x = headXPos[offset];
+    bodySegments[i].position.y = headYPos[offset];
+    bodySegments[i].position.z = headZPos[offset];
+
+    //bodySegments[i].rotation.x = headXRot[offset];
+    bodySegments[i].rotation.y = headYRot[offset];
+    //bodySegments[i].rotation.z = headZPos[offset];
+    
+  }
+}
+
+function rotateHead(head){
+  //head.rotation.x = headXRot[0];
+  head.rotation.y = headYRot[0];
+  //head.rotation.z = headZRot[0];
 }
 
 //function to clear the scene
@@ -290,13 +302,13 @@ function ClearBodySegments(scene)
   
 }
 
-//final update loop
+//constructor
 class Dragon {
   constructor(scene)
   {
     UpdateColors();
     this.head = DrawHead(scene, DrawSkull(), DrawJaw(), DrawEyes());
-    updateHeadPositions(this.head, frameRate);
+    updateHeadPositions(this.head, updateRate);
     DrawBodySegments(scene);  
 
     this.orbiter = new Orbiter(this.head, new THREE.Vector3(0,0,0), 10)
@@ -309,9 +321,12 @@ class Dragon {
     // currFrame = (currFrame + 1);
     // CreateScene(scene);
     this.orbiter.onUpdate()
-    updateHeadPositions(this.head, frameRate);
-    ClearBodySegments(scene);
-    DrawBodySegments(scene);  
+    updateHeadPositions(this.head, updateRate);
+    updateHeadRotations(this.head, updateRate);
+    positionBodySegments();
+    rotateHead(this.head);
+    //ClearBodySegments(scene);
+    //DrawBodySegments(scene);  
   }
 }
 
