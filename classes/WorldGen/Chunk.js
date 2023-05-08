@@ -64,16 +64,16 @@ class Chunk{
                         // good vertice
 
                         // make island edges y=0, so it connects with the rocky underside
-                        if (this.GetPerlin(x-1, y-1) < Chunk.killHeight) {
+                        if (this.GetPerlin(x-1, y) < Chunk.killHeight) {
                             perlinHeight = Chunk.killHeight;
                         }
-                        else if (this.GetPerlin(x+1, y-1) < Chunk.killHeight) {
+                        else if (this.GetPerlin(x+1, y) < Chunk.killHeight) {
                             perlinHeight = Chunk.killHeight;
                         }
-                        else if (this.GetPerlin(x-1, y+1) < Chunk.killHeight) {
+                        else if (this.GetPerlin(x, y-1) < Chunk.killHeight) {
                             perlinHeight = Chunk.killHeight;
                         }
-                        else if (this.GetPerlin(x+1, y+1) < Chunk.killHeight) {
+                        else if (this.GetPerlin(x, y+1) < Chunk.killHeight) {
                             perlinHeight = Chunk.killHeight;
                         }
 
@@ -83,10 +83,9 @@ class Chunk{
 
                         // set rock vertice position
                         if (vertice.y > 0) {
-                            do {
-                                rockHeight = -vertice.y * 1.8 + (Math.random() * 18 - 9)
-                            }
-                            while (rockHeight > 0);
+                            rockHeight = -vertice.y * 1.8; // flip grass
+                            rockHeight *= Math.random() * .8 + 0.6; // add spikes
+                            // rockHeight = -vertice.y * 1.8 + (Math.random() * 18 - 9);
                         }
                     }
 
