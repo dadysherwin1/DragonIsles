@@ -6,7 +6,7 @@ class Orbiter {
         this.originPos = origin;    // THREE.Vector3
         this.radius = radius;
         this.rotSpeed = 1;
-        this.t = 0;
+        this.t = Math.random()*360;
         this.clock = new THREE.Clock();
     }
 
@@ -19,6 +19,7 @@ class Orbiter {
         var a = this.t*this.rotSpeed;
         this.object.position.x = this.originPos.x + (Math.cos(a)*this.radius);
         this.object.position.z = this.originPos.z + (Math.sin(a)*this.radius);
+        this.object.position.y = this.originPos.y;
         //this.object.rotation.y = -a -90;
     }
 }

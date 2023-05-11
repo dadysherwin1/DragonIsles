@@ -304,14 +304,14 @@ function ClearBodySegments(scene)
 
 //constructor
 class Dragon {
-  constructor(scene)
+  constructor(scene, pos, r)
   {
     UpdateColors();
     this.head = DrawHead(scene, DrawSkull(), DrawJaw(), DrawEyes());
     updateHeadPositions(this.head, updateRate);
     DrawBodySegments(scene);  
 
-    this.orbiter = new Orbiter(this.head, new THREE.Vector3(0,0,0), 10)
+    this.orbiter = new Orbiter(this.head, pos, r)
   }  
 
   OnUpdate(scene)
