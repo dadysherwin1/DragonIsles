@@ -14,6 +14,15 @@ const camera = new THREE.PerspectiveCamera( 45, width / height, 1, 1000 );
 scene.add( camera );
 camera.position.set(0,0,25);
 
+// ambient
+const light = new THREE.AmbientLight( 0xFFFFFF , .6); // soft white light
+scene.add( light );
+
+// point light
+const light2 = new THREE.PointLight( 0xFFFFFF, 1.5, 0);
+light2.position.set( 500,500,500);
+scene.add( light2 );
+
 // fly controls
 const controls = new OrbitControls(camera, renderer.domElement);
 

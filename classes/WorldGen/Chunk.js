@@ -166,8 +166,8 @@ class Chunk{
         }
 
         // material
-        const grassMaterial = new THREE.MeshBasicMaterial({color: new THREE.Color(0,100/255,0)});
-        const rockMaterial = new THREE.MeshBasicMaterial({color: new THREE.Color(50/255,50/255,50/255)});
+        const grassMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(0,100/255,0)});
+        const rockMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(50/255,50/255,50/255)});
         grassMaterial.side = THREE.FrontSide;
         rockMaterial.side = THREE.BackSide;
         
@@ -178,6 +178,10 @@ class Chunk{
         rock.setAttribute('position', new THREE.Float32BufferAttribute(rockVertices, 3));
         var grassMesh = new THREE.Mesh(grass, grassMaterial);
         var rockMesh = new THREE.Mesh(rock, rockMaterial);
+
+        // normals
+        grassMesh.geometry.computeVertexNormals();
+        rockMesh.geometry.computeVertexNormals();
 
         this.model.add(grassMesh);
         this.model.add(rockMesh);
