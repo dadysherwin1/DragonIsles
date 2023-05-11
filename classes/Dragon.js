@@ -4,7 +4,7 @@ import { Orbiter } from '../classes/Orbiter.js';
 
 //constructor
 class Dragon {
-  constructor(scene)
+  constructor(scene, pos, r)
   {
     this.bodySegments = [];
 
@@ -27,7 +27,7 @@ class Dragon {
     this.updateHeadPositions(this.head, this.updateRate);
     this.DrawBodySegments(scene, materials, meshes);  
 
-    this.orbiter = new Orbiter(this.head, new THREE.Vector3(0,0,0), 10)
+    this.orbiter = new Orbiter(this.head, pos, r)
   }  
 
   OnUpdate(scene)

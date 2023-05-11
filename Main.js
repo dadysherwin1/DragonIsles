@@ -17,16 +17,13 @@ camera.position.set(0,0,25);
 // fly controls
 const controls = new OrbitControls(camera, renderer.domElement);
 
-// dragon
-const dragon = new Dragon(scene);
-
 // world
 const world = new World(scene);
 
 // Update
 function OnUpdate()
 {
-  dragon.OnUpdate(scene);
+  world.Update();
   controls.update(2);
   renderer.render(scene, camera);
   requestAnimationFrame(OnUpdate);
