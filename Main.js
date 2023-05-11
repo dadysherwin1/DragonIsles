@@ -1,6 +1,6 @@
 import * as THREE from "../modules/three.module.js";
 import { OrbitControls }  from "../modules/OrbitControls.js";
-import { FlyControls } from "../modules/FlyControls.js";
+import { FirstPersonControls } from "../modules/FirstPersonControls.js";
 import { Dragon } from "../classes/Dragon.js";
 import { World } from "../classes/WorldGen/World.js";
 import {Tree} from '../classes/WorldGen/Tree.js';
@@ -17,7 +17,8 @@ camera.position.set(0,0,25);
 scene.add( camera );
 // fly controls
 // const controls = new OrbitControls(camera, renderer.domElement);
-const controls = new FlyControls(camera, renderer.domElement);
+const controls = new FirstPersonControls(camera, renderer.domElement);
+controls.lookSpeed = 0.001;
 var pos = new THREE.Vector3( camera.position.x, camera.position.y, camera.position.z );
 var thing = new Tree(pos).model;
 
