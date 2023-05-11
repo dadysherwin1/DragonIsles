@@ -3,9 +3,9 @@
 
 class Perlin {
 
-    islandSize = 140;
+    constructor(avgIslandSize) {
+        this.avgIslandSize = avgIslandSize;
 
-    constructor() {
         this.grad3 =    
             [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0], 
             [1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1], 
@@ -39,8 +39,8 @@ class Perlin {
     }
 
     noise(xin, yin) {
-        xin /= this.islandSize;
-        yin /= this.islandSize;
+        xin /= this.avgIslandSize;
+        yin /= this.avgIslandSize;
 
         var n0, n1, n2; // Noise contributions from the three corners 
         // Skew the input space to determine which simplex cell we're in 
