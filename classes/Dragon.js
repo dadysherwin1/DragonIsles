@@ -304,14 +304,15 @@ function ClearBodySegments(scene)
 
 //constructor
 class Dragon {
-  constructor(scene, pos, r)
+  constructor(scene)
   {
     UpdateColors();
     this.head = DrawHead(scene, DrawSkull(), DrawJaw(), DrawEyes());
     updateHeadPositions(this.head, updateRate);
     DrawBodySegments(scene);  
 
-    this.orbiter = new Orbiter(this.head, pos, r)
+    // this.orbiter = new Orbiter(this.head, pos, r)
+    this.orbiter = false;
   }  
 
   OnUpdate(scene)
@@ -320,7 +321,9 @@ class Dragon {
     // //currFrame = (currFrame + 1)%subFrames;
     // currFrame = (currFrame + 1);
     // CreateScene(scene);
-    this.orbiter.onUpdate()
+    if (this.orbiter != false) {
+      this.orbiter.onUpdate()
+    }
     updateHeadPositions(this.head, updateRate);
     updateHeadRotations(this.head, updateRate);
     positionBodySegments();
