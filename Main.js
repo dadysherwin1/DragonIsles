@@ -19,6 +19,7 @@ scene.add( camera );
 // const controls = new OrbitControls(camera, renderer.domElement);
 const controls = new FirstPersonControls(camera, renderer.domElement);
 controls.lookSpeed = 0.001;
+  //Placeholder tree
 var pos = new THREE.Vector3( camera.position.x, camera.position.y, camera.position.z );
 var thing = new Tree(pos).model;
 
