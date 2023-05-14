@@ -25,6 +25,18 @@ class World {
             var d = new Dragon(scene, pos, 10 + (Math.random()*10));
             this.dragons.push(d);
         }
+
+        // skybox
+        const loader = new THREE.CubeTextureLoader();
+        loader.setPath('assets/skybox/');
+
+        const textureCube = loader.load([
+            'Daylight Box_Front.bmp',   'Daylight Box_Back.bmp',
+            'Daylight Box_Top.bmp',     'Daylight Box_Bottom.bmp',
+            'Daylight Box_Left.bmp',    'Daylight Box_Right.bmp'
+        ])
+
+        scene.background = textureCube;
     }
 
     CreateChunk(pos) {
