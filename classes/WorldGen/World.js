@@ -2,8 +2,8 @@ import * as THREE from '../../modules/three.module.js';
 import { Dragon } from "../../classes/Dragon.js";
 import { Chunk } from "./Chunk.js";
 
-var areaLength = 800;
-var numOfChunks = 10;
+var areaLength = 600;
+var numOfChunks = 12;
 
 class World {
 
