@@ -3,7 +3,7 @@ import { Dragon } from "../../classes/Dragon.js";
 import { Chunk } from "./Chunk.js";
 
 var areaLength = 600;
-var numOfChunks = 12;
+var numOfChunks = 10;
 
 class World {
 

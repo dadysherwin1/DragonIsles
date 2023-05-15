@@ -5,11 +5,11 @@ import {Perlin} from './Perlin.js';
 class Chunk{
 
     // configs
-    static size = 400;
-    static subd = 100;
+    static size = 300;
+    static subd = 70;
     static islandFreq = .3; // [0, 1]
-    static maxHeight = 50;
-    static avgIslandSize = 350;
+    static maxHeight = 35;
+    static avgIslandSize = 235; // this is opposite
 
     // dont touch
     static killHeight = 1 - (Chunk.islandFreq * 2);
