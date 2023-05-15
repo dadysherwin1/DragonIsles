@@ -169,8 +169,36 @@ class Chunk{
             }
         }
 
+        // load textures
+        var repeatNum = new THREE.Vector2(5, 5);
+
+        var texture = new THREE.TextureLoader().load("../../assets/grass/Grass_Texture_2_1K_Diff.jpg");
+        texture.repeat = repeatNum;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+
+        var textureNormal = new THREE.TextureLoader().load("../../assets/grass/Grass_Texture_1K_Nrml.jpg");
+        textureNormal.repeat = repeatNum;
+        textureNormal.wrapS = THREE.RepeatWrapping;
+        textureNormal.wrapT = THREE.RepeatWrapping;
+
+        var textureSpecular = new THREE.TextureLoader().load("../../assets/grass/Grass_Texture_1K_Spec.jpg");
+        textureSpecular.repeat = repeatNum;
+        textureSpecular.wrapS = THREE.RepeatWrapping;
+        textureSpecular.wrapT = THREE.RepeatWrapping;
+
+        var textureAo = new THREE.TextureLoader().load("../../assets/grass/Grass_Texture_1K_AO.jpg");
+        textureAo.repeat = repeatNum;
+        textureAo.wrapS = THREE.RepeatWrapping;
+        textureAo.wrapT = THREE.RepeatWrapping;
+
         // material
-        const grassMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(0,100/255,0)});
+        const grassMaterial = new THREE.MeshPhongMaterial({
+            map : texture,
+            normalMap : textureNormal,
+            specularMap : textureSpecular,
+            aoMap : textureAo
+        });
         const rockMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(50/255,50/255,50/255)});
         grassMaterial.side = THREE.FrontSide;
         rockMaterial.side = THREE.BackSide;
