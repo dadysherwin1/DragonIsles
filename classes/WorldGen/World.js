@@ -31,9 +31,9 @@ class World {
         loader.setPath('assets/skybox/');
 
         const textureCube = loader.load([
-            'Daylight Box_Front.bmp',   'Daylight Box_Back.bmp',
-            'Daylight Box_Top.bmp',     'Daylight Box_Bottom.bmp',
-            'Daylight Box_Left.bmp',    'Daylight Box_Right.bmp'
+            'Daylight Box_Front.png',   'Daylight Box_Back.png',
+            'Daylight Box_Top.png',     'Daylight Box_Bottom.png',
+            'Daylight Box_Left.png',    'Daylight Box_Right.png'
         ])
 
         scene.background = textureCube;
