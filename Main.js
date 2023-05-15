@@ -12,18 +12,15 @@ document.body.appendChild(renderer.domElement);
 var scene = new THREE.Scene();
 var width = window.innerWidth;
 var height = window.innerHeight;
-const camera = new THREE.PerspectiveCamera( 45, width / height, 1, 1000 );
-camera.position.set(0,0,25);
+const camera = new THREE.PerspectiveCamera( 45, width / height, 1, 10000 );
 scene.add( camera );
+camera.position.set(500,500,0);
+var Dir = new THREE.Vector3(0,0,0);
+camera.lookAt(Dir.x,Dir.y,Dir.z);
 
 // ambient
 const light = new THREE.AmbientLight( 0xFFFFFF , .6); // soft white light
 scene.add( light );
-
-// point light
-const light2 = new THREE.PointLight( 0xFFFFFF, 1.5, 0);
-light2.position.set( 500,500,500);
-scene.add( light2 );
 
 // fly controls
 // const controls = new OrbitControls(camera, renderer.domElement);
