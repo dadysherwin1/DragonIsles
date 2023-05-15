@@ -10,9 +10,11 @@ document.body.appendChild(renderer.domElement);
 var scene = new THREE.Scene();
 var width = window.innerWidth;
 var height = window.innerHeight;
-const camera = new THREE.PerspectiveCamera( 45, width / height, 1, 1000 );
+const camera = new THREE.PerspectiveCamera( 45, width / height, 1, 10000 );
 scene.add( camera );
-camera.position.set(0,0,25);
+camera.position.set(500,500,0);
+var Dir = new THREE.Vector3(0,0,0);
+camera.lookAt(Dir.x,Dir.y,Dir.z);
 
 // fly controls
 const controls = new OrbitControls(camera, renderer.domElement);
