@@ -105,6 +105,7 @@ class Chunk{
             }
             // otherwise, regen the islands
             else {
+                highestPoint = new THREE.Vector3(0,0,0);
                 vertices = [];
                 rockVertices = [];
             }
@@ -185,6 +186,7 @@ class Chunk{
         this.model.add(grassMesh);
         this.model.add(rockMesh);
 
+        highestPoint.add(pos);
         return highestPoint;
     }
 

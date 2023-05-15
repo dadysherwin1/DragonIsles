@@ -19,10 +19,9 @@ class World {
 
             const chunk = this.CreateChunk(pos);
             scene.add(chunk.model);
-
-            pos.add(chunk.highestPoint);
             
-            var d = new Dragon(scene, pos, 10 + (Math.random()*10));
+            var dragonPos = chunk.highestPoint.add(new THREE.Vector3(0,5,0));
+            var d = new Dragon(scene, dragonPos, 10 + (Math.random()*10));
             this.dragons.push(d);
         }
 
