@@ -20,7 +20,7 @@ class Chunk{
         this.perlin = new Perlin(Chunk.avgIslandSize);
 
         this.model = new THREE.Object3D();
-        this.CreateIslands(this.pos);
+        this.highestPoint = this.CreateIslands(this.pos);
         this.model.position.set(this.pos.x, this.pos.y, this.pos.z);
     }
 
@@ -34,6 +34,7 @@ class Chunk{
         var vertices = [];
         var rockVertices = [];
         const indices = [];
+        var highestPoint = new THREE.Vector3(0,0,0);
 
         // keep regening until there's good islands
         while (true) {
@@ -89,6 +90,10 @@ class Chunk{
                         }
                     }
 
+                    if (vertice.y > highestPoint.y) {
+                        highestPoint = vertice;
+                    }
+
                     vertices.push(vertice.x, vertice.y, vertice.z);
                     rockVertices.push(vertice.x, rockHeight,vertice.z)
                 }
@@ -100,11 +105,10 @@ class Chunk{
             }
             // otherwise, regen the islands
             else {
+                highestPoint = new THREE.Vector3(0,0,0);
                 vertices = [];
                 rockVertices = [];
             }
-
-            
         }
 
         // Randomly place tree and checks if tree would be on the edge of a chunk
@@ -185,6 +189,9 @@ class Chunk{
 
         this.model.add(grassMesh);
         this.model.add(rockMesh);
+
+        highestPoint.add(pos);
+        return highestPoint;
     }
 
 }
