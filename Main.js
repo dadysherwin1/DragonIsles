@@ -4,6 +4,7 @@ import { FirstPersonControls } from "../modules/FirstPersonControls.js";
 import { Dragon } from "../classes/Dragon.js";
 import { World } from "../classes/WorldGen/World.js";
 import { Tree } from '../classes/WorldGen/Tree.js';
+import { FlowerBed } from '../classes/WorldGen/FlowerBed.js';
 
 // initialization
 var renderer = new THREE.WebGLRenderer();
@@ -14,7 +15,7 @@ var width = window.innerWidth;
 var height = window.innerHeight;
 const camera = new THREE.PerspectiveCamera( 45, width / height, 1, 10000 );
 scene.add( camera );
-camera.position.set(600,0,0);
+camera.position.set(0,0,0);
 var Dir = new THREE.Vector3(0,0,0);
 camera.lookAt(Dir.x,Dir.y,Dir.z);
 
@@ -29,9 +30,9 @@ controls.lookSpeed = 0.001;
 
 //Placeholder tree
 var pos = new THREE.Vector3( camera.position.x, camera.position.y, camera.position.z );
-var thing = new Tree(pos).model;
-camera.add(thing);
-thing.position.set(0, -30, -100);
+var thing = new FlowerBed(pos).model;
+scene.add(thing);
+thing.position.set(0, -5, -50);
 
 // dragon
 const dragon = new Dragon(scene);

@@ -1,5 +1,6 @@
 import * as THREE from '../../modules/three.module.js';
 import {Tree} from './Tree.js';
+import {FlowerBed} from './FlowerBed.js';
 import {Perlin} from './Perlin.js';
 
 class Chunk{
@@ -18,7 +19,7 @@ class Chunk{
     {
         this.pos = pos;
         this.perlin = new Perlin(Chunk.avgIslandSize);
-
+        this.perlinFlower = new Perlin(Chunk.avgIslandSize);
         this.model = new THREE.Object3D();
         this.highestPoint = this.CreateIslands(this.pos);
         this.model.position.set(this.pos.x, this.pos.y, this.pos.z);
@@ -117,10 +118,18 @@ class Chunk{
             const y = vertices[i+1];
             const z = vertices[i+2];
             const pos = new THREE.Vector3(x,y,z);
+            var perlinHeightFlo = this.perlinFlower.noise(x/Chunk.subd*Chunk.size, z/Chunk.subd*Chunk.size);
             if(Math.random() < (1/Chunk.subd) && y > 5)                
             {                                               
                 this.model.add(new Tree(pos).model);  //Adds tree to chunk  
+                // this.model.add(new FlowerBed(pos).model);
             }
+
+            
+            // if (perlinHeightFlo < -0.5 && y > 0) {
+            //     this.model.add(new FlowerBed(pos).model);
+            // }
+
         }
 
         // set faces
