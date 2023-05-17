@@ -23,6 +23,11 @@ camera.lookAt(Dir.x,Dir.y,Dir.z);
 const light = new THREE.AmbientLight( 0xFFFFFF , .6); // soft white light
 scene.add( light );
 
+// point light
+const light2 = new THREE.PointLight( 0xFFFFFF, 1.5, 0);
+light2.position.set( 500,500,500);
+scene.add( light2 );
+
 // fly controls
 // const controls = new OrbitControls(camera, renderer.domElement);
 const controls = new FirstPersonControls(camera, renderer.domElement);
