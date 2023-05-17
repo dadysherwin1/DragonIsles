@@ -202,12 +202,15 @@ class Chunk{
         textureAo.wrapT = THREE.RepeatWrapping;
 
         // material
-        const grassMaterial = new THREE.MeshPhongMaterial({
-            map : texture,
-            normalMap : textureNormal,
-            specularMap : textureSpecular,
-            aoMap : textureAo
-        });
+        const grassMaterial = new THREE.MeshPhongMaterial(
+        {
+            color: new THREE.Color(0,100/255,0)
+            // map : texture,
+            // normalMap : textureNormal,
+            // specularMap : textureSpecular,
+            // aoMap : textureAo
+        }
+        );
         const rockMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(50/255,50/255,50/255)});
         grassMaterial.side = THREE.FrontSide;
         rockMaterial.side = THREE.BackSide;
