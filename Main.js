@@ -3,8 +3,8 @@ import { OrbitControls }  from "../modules/OrbitControls.js";
 import { FirstPersonControls } from "../modules/FirstPersonControls.js";
 import { Dragon } from "../classes/Dragon.js";
 import { World } from "../classes/WorldGen/World.js";
-import { Tree } from '../classes/WorldGen/Tree.js';
-import { FlowerBed } from '../classes/WorldGen/FlowerBed.js';
+// import { Tree } from '../classes/WorldGen/Tree.js';
+// import { FlowerBed } from '../classes/WorldGen/FlowerBed.js';
 
 // initialization
 var renderer = new THREE.WebGLRenderer();
@@ -34,10 +34,10 @@ const controls = new FirstPersonControls(camera, renderer.domElement);
 controls.lookSpeed = 0.001;
 
 //Placeholder tree
-var pos = new THREE.Vector3( camera.position.x, camera.position.y, camera.position.z );
-var thing = new FlowerBed(pos).model;
-scene.add(thing);
-thing.position.set(0, -5, -50);
+// var pos = new THREE.Vector3( camera.position.x, camera.position.y, camera.position.z );
+// var thing = new FlowerBed(pos).model;
+// scene.add(thing);
+// thing.position.set(0, -5, -50);
 
 // dragon
 const dragon = new Dragon(scene);

@@ -126,9 +126,9 @@ class Chunk{
             }
 
             
-            // if (perlinHeightFlo < -0.5 && y > 0) {
-            //     this.model.add(new FlowerBed(pos).model);
-            // }
+            if (perlinHeightFlo < -0.5 && y > 0) {
+                this.model.add(new FlowerBed(pos).model);
+            }
 
         }
 

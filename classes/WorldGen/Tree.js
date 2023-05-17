@@ -21,7 +21,7 @@ class Tree{
 
 
     createTreeBase(){ //Creates the tree trunk base
-        var cylinderMat = new THREE.MeshBasicMaterial();
+        var cylinderMat = new THREE.MeshLambertMaterial();
         cylinderMat.color = new THREE.Color(0xce6900);
         var cyliderGeo = new THREE.CylinderGeometry(1, 2, 10);
         var base = new THREE.Mesh(cyliderGeo, cylinderMat);
@@ -30,7 +30,7 @@ class Tree{
 
     createLeaves(){ //Creates a few cones of vary sizes as the leaves of the tree (numbers are currently hardcoded)
         var leavesList = new THREE.Object3D();
-        var coneMat = new THREE.MeshBasicMaterial();
+        var coneMat = new THREE.MeshLambertMaterial();
         coneMat.color = new THREE.Color(0x8fce00);
         for(let i = 1; i < 4; i++){
             var coneGeo = new THREE.ConeGeometry(6-i, 6);
