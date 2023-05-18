@@ -32,6 +32,7 @@ scene.add( light2 );
 // const controls = new OrbitControls(camera, renderer.domElement);
 const controls = new FirstPersonControls(camera, renderer.domElement);
 controls.lookSpeed = 0.001;
+controls.movementSpeed = 0.8;
 
 // //Placeholder tree
 // var pos = new THREE.Vector3( camera.position.x, camera.position.y, camera.position.z );
