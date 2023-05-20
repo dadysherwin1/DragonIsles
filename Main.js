@@ -52,7 +52,7 @@ function OnUpdate()
   world.Update();
   controls.update(2);
 
-  console.log(camera)
+  // console.log(camera)
 
   // dragon moving
   dragon.head.position.copy(camera.position)

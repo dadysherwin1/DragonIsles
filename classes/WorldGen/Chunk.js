@@ -12,6 +12,9 @@ class Chunk{
     static maxHeight = 35;
     static avgIslandSize = 235; // this is opposite
 
+    static grassUVStretchMult = 4
+    static rockUVStretchMult = 4
+
     // dont touch
     static killHeight = 1 - (Chunk.islandFreq * 2);
 
@@ -36,6 +39,7 @@ class Chunk{
         var rockVertices = [];
         const indices = [];
         var highestPoint = new THREE.Vector3(0,0,0);
+        var uvs = [];
 
         // keep regening until there's good islands
         while (true) {
@@ -89,6 +93,8 @@ class Chunk{
                             rockHeight *= Math.random() * .8 + 0.6; // add spikes
                             // rockHeight = -vertice.y * 1.8 + (Math.random() * 18 - 9);
                         }
+
+                        
                     }
 
                     if (vertice.y > highestPoint.y) {
@@ -97,6 +103,11 @@ class Chunk{
 
                     vertices.push(vertice.x, vertice.y, vertice.z);
                     rockVertices.push(vertice.x, rockHeight,vertice.z)
+
+                    // set UV
+                    const u = x / Chunk.grassUVStretchMult;
+                    const v = y / Chunk.grassUVStretchMult;
+                    uvs.push(u,v);
                 }
             }
         
@@ -109,6 +120,7 @@ class Chunk{
                 highestPoint = new THREE.Vector3(0,0,0);
                 vertices = [];
                 rockVertices = [];
+                uvs = [];
             }
         }
 
@@ -155,13 +167,14 @@ class Chunk{
                 if (ValidateVertice(Idx2)) {totalVertices++;}
                 if (ValidateVertice(Idx3)) {totalVertices++;}
 
-                // 2 triangles
+                // add faces
                 if (totalVertices == 4) {
+                    // 2 triangles
                     indices.push(Idx1, Idx0, Idx2);
                     indices.push(Idx2, Idx0, Idx3);
                 }
-                // 1 triangle
                 else if (totalVertices == 3) {
+                    // 1 triangle
                     if (ValidateTriangle(Idx0, Idx1, Idx2)) {
                         indices.push(Idx2, Idx1, Idx0);
                     }
@@ -175,6 +188,12 @@ class Chunk{
                         indices.push(Idx1, Idx0, Idx3);
                     }
                 }
+
+                // set UVs
+                // const u = x % 2 / 4; // 0 or 1
+                // const v = y % 2 / 4; // 0 or 1
+                // const u = 
+                // uvs.push(u,v);
             }
         }
 
@@ -182,6 +201,7 @@ class Chunk{
         var repeatNum = new THREE.Vector2(5, 5);
 
         var texture = new THREE.TextureLoader().load("../../assets/grass/Grass_Texture_2_1K_Diff.jpg");
+        // var texture = new THREE.TextureLoader().load("../../assets/grass/test_texture.jpeg");
         texture.repeat = repeatNum;
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
@@ -204,29 +224,29 @@ class Chunk{
         // material
         const grassMaterial = new THREE.MeshPhongMaterial(
         {
-            color: new THREE.Color(0,100/255,0)
-            // map : texture,
-            // normalMap : textureNormal,
-            // specularMap : textureSpecular,
-            // aoMap : textureAo
+            // color: new THREE.Color(0,100/255,0),
+            map : texture,
+            normalMap : textureNormal,
+            specularMap : textureSpecular,
+            aoMap : textureAo
         }
         );
         const rockMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(50/255,50/255,50/255)});
         grassMaterial.side = THREE.FrontSide;
         rockMaterial.side = THREE.BackSide;
         
-        // mesh
+        // geometry
         grass.setIndex(indices);
         rock.setIndex(indices);
         grass.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        grass.setAttribute('uv', new THREE.Float32BufferAttribute(uvs,2));
+        rock.setAttribute('uv', new THREE.Float32BufferAttribute(uvs,2));
         rock.setAttribute('position', new THREE.Float32BufferAttribute(rockVertices, 3));
+        grass.computeVertexNormals();
+        rock.computeVertexNormals();
+
         var grassMesh = new THREE.Mesh(grass, grassMaterial);
-        var rockMesh = new THREE.Mesh(rock, rockMaterial);
-
-        // normals
-        grassMesh.geometry.computeVertexNormals();
-        rockMesh.geometry.computeVertexNormals();
-
+        var rockMesh = new THREE.Mesh(rock, rockMaterial); 
         this.model.add(grassMesh);
         this.model.add(rockMesh);
 
