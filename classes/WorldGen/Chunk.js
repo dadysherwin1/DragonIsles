@@ -105,8 +105,9 @@ class Chunk{
                     rockVertices.push(vertice.x, rockHeight,vertice.z)
 
                     // set UV
-                    const u = x / Chunk.grassUVStretchMult;
-                    const v = y / Chunk.grassUVStretchMult;
+                    var num = (this.perlinFlower.noise(vertice.x/Chunk.subd*Chunk.size, vertice.z/Chunk.subd*Chunk.size) < -0.5) ? 0 : -0.5;
+                    const u =  (x % 2)/2 -num;
+                    const v = y % 2;
                     uvs.push(u,v);
                 }
             }
@@ -188,21 +189,18 @@ class Chunk{
                         indices.push(Idx1, Idx0, Idx3);
                     }
                 }
-
-                // set UVs
-                // const u = x % 2 / 4; // 0 or 1
-                // const v = y % 2 / 4; // 0 or 1
-                // const u = 
-                // uvs.push(u,v);
             }
         }
 
         // load textures
         var repeatNum = new THREE.Vector2(5, 5);
 
-        var texture = new THREE.TextureLoader().load("../../assets/grass/Grass_Texture_2_1K_Diff.jpg");
+        // var texture = new THREE.TextureLoader().load("../../assets/Flower/test_texture.jpg");
+        var texture = new THREE.TextureLoader().load("../../assets/grass/grass.png");
+        texture.minFilter = THREE.NearestFilter;
+        texture.magFilter = THREE.NearestFilter;
         // var texture = new THREE.TextureLoader().load("../../assets/grass/test_texture.jpeg");
-        texture.repeat = repeatNum;
+        // texture.repeat = repeatNum;
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
 
@@ -226,13 +224,14 @@ class Chunk{
         {
             // color: new THREE.Color(0,100/255,0),
             map : texture,
-            normalMap : textureNormal,
-            specularMap : textureSpecular,
-            aoMap : textureAo
+            // normalMap : textureNormal,
+            // specularMap : textureSpecular,
+            // aoMap : textureAo
         }
         );
         const rockMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(50/255,50/255,50/255)});
         grassMaterial.side = THREE.FrontSide;
+        // grassMaterial.wireframe = true;
         rockMaterial.side = THREE.BackSide;
         
         // geometry

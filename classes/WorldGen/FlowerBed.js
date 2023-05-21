@@ -17,7 +17,7 @@ class FlowerBed{
         // obj.add(flower1);
         // obj.add(flower2);
         obj.position.x = pos.x;
-        obj.position.y = pos.y + 1;//same pos
+        obj.position.y = pos.y;//same pos
         obj.position.z = pos.z;
         this.model.add(obj);
     }
@@ -26,7 +26,7 @@ class FlowerBed{
         
         var quadGeo = new THREE.PlaneGeometry(2, 1, 1, 1);       
         var quadMat = FlowTextLoader.material;
-        quadMat.side = THREE.DoubleSided;
+
 
         var quad = new THREE.Mesh(quadGeo, FlowTextLoader.material);
 
