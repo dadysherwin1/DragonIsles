@@ -3,7 +3,26 @@ import * as THREE from '../../modules/three.module.js';
 class FlowerBed{
     constructor(pos){
         this.model = new THREE.Object3D();
-        this.FlowerBed(pos);
+        // this.FlowerBed(pos);
+        this.FlowerPNG(pos);
+    }
+
+    FlowerPNG(pos){
+        var flower0 = this.createQuad();
+        
+        var obj = new THREE.Group();  //adds 
+        
+        obj.add(flower0);
+        // obj.add(flower1);
+        // obj.add(flower2);
+        obj.position.x = pos.x;
+        obj.position.y = pos.y;//same pos
+        obj.position.z = pos.z;
+        this.model.add(obj);
+    }
+
+    createQuad(){
+        
     }
 
     FlowerBed(pos){
