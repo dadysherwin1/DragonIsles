@@ -52,7 +52,6 @@ function OnUpdate()
   world.Update();
   controls.update(2);
 
-  // dragon moving
   dragon.head.position.copy(camera.position)
   dragon.head.rotation.copy(camera.rotation)
   dragon.head.updateMatrix();
