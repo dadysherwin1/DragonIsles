@@ -84,11 +84,11 @@ class Chunk{
             uvs.push(u,v);
         }
 
-        // function VertexExists(x,y) {
+        function CheckVertex(x,y) {
+            return this.perlin.GetPerlin(x,y) > Chunk.killHeight;
+        }
 
-        // }
-
-        function getNeighbours(x, y) {
+        function GetNeighbours(x, y) {
             var neighbours = [];
             neighbours.push(x-1,y);
             neighbours.push(x,y-1);
@@ -96,16 +96,26 @@ class Chunk{
             neighbours.push(x,y+1);
         }
 
-        for (var x = 0; x < Chunk.subd; x++) {
-            for (var y = 0; y < Chunk.subd; y++) {
-                if (this.GetPerlin(x,y) < Chunk.killHeight) continue;
+        function DFS(x,y) {
+            AddVertex(this, x,y);
+            const neighbours = GetNeighbours(x,y)
+            for (var i = 0; i < neighbours.length(); i++) {
+                const x = i;
+                const y = i+1;
 
-                // start breadth first search
-                AddVertex(this, x,y);
-                // const neighbours = []
-                // neighbours.add()
+                if (CheckVertex(x,y)) {
+                    DFS(x,y);
+                }
+            }
+        }
 
-                // break;
+        // loop until we find an island
+        while (true) do {
+            if (!CheckVertex(0,0)) {
+                this.perlin = new Perlin(Chunk.avgIslandSize);
+            } else {
+                DFS(0,0);
+                break;
             }
         }
         
