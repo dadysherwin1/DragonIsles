@@ -41,88 +41,74 @@ class Chunk{
         var highestPoint = new THREE.Vector3(0,0,0);
         var uvs = [];
 
-        // keep regening until there's good islands
-        while (true) {
-            var goodIslands = true;
+        function AddVertex(object, x, y) {
+            var vertice = new THREE.Vector3(x, 0, y);
+            var perlinHeight = object.GetPerlin(x,y);
+            var rockHeight = 0
 
-            for (var x = 0; x < Chunk.subd; x++) {
-                if (!goodIslands) {
-                    break;
-                }
-                for (var y = 0; y < Chunk.subd; y++) {
-                    var vertice = new THREE.Vector3(x/Chunk.subd*Chunk.size, 0, y/Chunk.subd*Chunk.size);
-                    vertice.x -= Chunk.size/2;
-                    vertice.z -= Chunk.size/2;
-                    var perlinHeight = this.GetPerlin(x,y);
-                    var rockHeight = 0
-                    if (perlinHeight < Chunk.killHeight) {
-                        // bad vertice
-                        vertice.y = -1;
-                    }
-                    else if (x == 0 || y == 0 || x == Chunk.subd-1 || y == Chunk.subd-1) {
-                        // a vertice is on the edge of the chunk, meaning an island got sliced!
-                        // time to regen
-                        goodIslands = false;
-                        this.perlin = new Perlin(Chunk.avgIslandSize);
-                        break;
-                    }
-                    else { 
-                        // good vertice
-
-                        // make island edges y=0, so it connects with the rocky underside
-                        if (this.GetPerlin(x-1, y) < Chunk.killHeight) {
-                            perlinHeight = Chunk.killHeight;
-                        }
-                        else if (this.GetPerlin(x+1, y) < Chunk.killHeight) {
-                            perlinHeight = Chunk.killHeight;
-                        }
-                        else if (this.GetPerlin(x, y-1) < Chunk.killHeight) {
-                            perlinHeight = Chunk.killHeight;
-                        }
-                        else if (this.GetPerlin(x, y+1) < Chunk.killHeight) {
-                            perlinHeight = Chunk.killHeight;
-                        }
-
-                        // scale up vertices to maxHeight
-                        vertice.y = perlinHeight - Chunk.killHeight; // 
-                        vertice.y *= Chunk.maxHeight/(1-Chunk.killHeight); // [0, Chunk.maxHeight]
-
-                        // set rock vertice position
-                        if (vertice.y > 0) {
-                            rockHeight = -vertice.y * 1.8; // flip grass
-                            rockHeight *= Math.random() * .8 + 0.6; // add spikes
-                            // rockHeight = -vertice.y * 1.8 + (Math.random() * 18 - 9);
-                        }
-
-                        
-                    }
-
-                    if (vertice.y > highestPoint.y) {
-                        highestPoint = vertice;
-                    }
-
-                    vertices.push(vertice.x, vertice.y, vertice.z);
-                    rockVertices.push(vertice.x, rockHeight,vertice.z)
-
-                    // set UV
-                    const u = x / Chunk.grassUVStretchMult;
-                    const v = y / Chunk.grassUVStretchMult;
-                    uvs.push(u,v);
-                }
+            // make island edges y=0, so it connects with the rocky underside
+            if (object.GetPerlin(x-1, y) < Chunk.killHeight) {
+                perlinHeight = Chunk.killHeight;
             }
-        
-            // if the islands are good, break the loop
-            if (goodIslands) {
-                break;
+            else if (object.GetPerlin(x+1, y) < Chunk.killHeight) {
+                perlinHeight = Chunk.killHeight;
             }
-            // otherwise, regen the islands
-            else {
-                highestPoint = new THREE.Vector3(0,0,0);
-                vertices = [];
-                rockVertices = [];
-                uvs = [];
+            else if (object.GetPerlin(x, y-1) < Chunk.killHeight) {
+                perlinHeight = Chunk.killHeight;
+            }
+            else if (object.GetPerlin(x, y+1) < Chunk.killHeight) {
+                perlinHeight = Chunk.killHeight;
+            }
+
+            // scale up vertices to maxHeight
+            vertice.y = perlinHeight - Chunk.killHeight; // 
+            vertice.y *= Chunk.maxHeight/(1-Chunk.killHeight); // [0, Chunk.maxHeight]
+
+            // set rock vertice position
+            if (vertice.y > 0) {
+                rockHeight = -vertice.y * 1.8; // flip grass
+                rockHeight *= Math.random() * .8 + 0.6; // add spikes
+                // rockHeight = -vertice.y * 1.8 + (Math.random() * 18 - 9);
+            }
+
+            if (vertice.y > highestPoint.y) {
+                highestPoint = vertice;
+            }
+
+            vertices.push(vertice.x, vertice.y, vertice.z);
+            rockVertices.push(vertice.x, rockHeight,vertice.z)
+
+            // set UV
+            const u = x / Chunk.grassUVStretchMult;
+            const v = y / Chunk.grassUVStretchMult;
+            uvs.push(u,v);
+        }
+
+        // function VertexExists(x,y) {
+
+        // }
+
+        function getNeighbours(x, y) {
+            var neighbours = [];
+            neighbours.push(x-1,y);
+            neighbours.push(x,y-1);
+            neighbours.push(x+1,y);
+            neighbours.push(x,y+1);
+        }
+
+        for (var x = 0; x < Chunk.subd; x++) {
+            for (var y = 0; y < Chunk.subd; y++) {
+                if (this.GetPerlin(x,y) < Chunk.killHeight) continue;
+
+                // start breadth first search
+                AddVertex(this, x,y);
+                // const neighbours = []
+                // neighbours.add()
+
+                // break;
             }
         }
+        
 
         // Randomly place tree and checks if tree would be on the edge of a chunk
         for (var i = 0; i < vertices.length; i += 3) {
