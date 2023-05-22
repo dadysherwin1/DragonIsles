@@ -26,6 +26,7 @@ class Chunk{
         this.model = new THREE.Object3D();
         this.highestPoint = this.CreateIslands(this.pos);
         this.model.position.set(this.pos.x, this.pos.y, this.pos.z);
+        this.boundingSphere; // use this for dragon orbits
     }
 
     GetPerlin(x, y) {
@@ -41,6 +42,15 @@ class Chunk{
         var highestPoint = new THREE.Vector3(0,0,0);
         var uvs = [];
 
+        var minPos = new THREE.Vector3(999,0,999)
+        var maxPos = new THREE.Vector3(-999,1,-999)
+        function UpdateBoundingBox(x, z) {
+            if (x < minPos.x) minPos.x = x;
+            if (x > maxPos.x) maxPos.x = x;
+            if (z < minPos.z) minPos.z = z;
+            if (z > maxPos.z) maxPos.z = z;
+        }
+
         // keep regening until there's good islands
         while (true) {
             var goodIslands = true;
@@ -49,17 +59,17 @@ class Chunk{
                 if (!goodIslands) {
                     break;
                 }
-                for (var y = 0; y < Chunk.subd; y++) {
-                    var vertice = new THREE.Vector3(x/Chunk.subd*Chunk.size, 0, y/Chunk.subd*Chunk.size);
+                for (var z = 0; z < Chunk.subd; z++) {
+                    var vertice = new THREE.Vector3(x*Chunk.size/Chunk.subd, 0, z*Chunk.size/Chunk.subd);
                     vertice.x -= Chunk.size/2;
                     vertice.z -= Chunk.size/2;
-                    var perlinHeight = this.GetPerlin(x,y);
+                    var perlinHeight = this.GetPerlin(x,z);
                     var rockHeight = 0
                     if (perlinHeight < Chunk.killHeight) {
                         // bad vertice
                         vertice.y = -1;
                     }
-                    else if (x == 0 || y == 0 || x == Chunk.subd-1 || y == Chunk.subd-1) {
+                    else if (x == 0 || z == 0 || x == Chunk.subd-1 || z == Chunk.subd-1) {
                         // a vertice is on the edge of the chunk, meaning an island got sliced!
                         // time to regen
                         goodIslands = false;
@@ -68,18 +78,19 @@ class Chunk{
                     }
                     else { 
                         // good vertice
+                        UpdateBoundingBox(vertice.x,vertice.z);
 
                         // make island edges y=0, so it connects with the rocky underside
-                        if (this.GetPerlin(x-1, y) < Chunk.killHeight) {
+                        if (this.GetPerlin(x-1, z) < Chunk.killHeight) {
                             perlinHeight = Chunk.killHeight;
                         }
-                        else if (this.GetPerlin(x+1, y) < Chunk.killHeight) {
+                        else if (this.GetPerlin(x+1, z) < Chunk.killHeight) {
                             perlinHeight = Chunk.killHeight;
                         }
-                        else if (this.GetPerlin(x, y-1) < Chunk.killHeight) {
+                        else if (this.GetPerlin(x, z-1) < Chunk.killHeight) {
                             perlinHeight = Chunk.killHeight;
                         }
-                        else if (this.GetPerlin(x, y+1) < Chunk.killHeight) {
+                        else if (this.GetPerlin(x, z+1) < Chunk.killHeight) {
                             perlinHeight = Chunk.killHeight;
                         }
 
@@ -106,7 +117,7 @@ class Chunk{
 
                     // set UV
                     const u = x / Chunk.grassUVStretchMult;
-                    const v = y / Chunk.grassUVStretchMult;
+                    const v = z / Chunk.grassUVStretchMult;
                     uvs.push(u,v);
                 }
             }
@@ -121,6 +132,8 @@ class Chunk{
                 vertices = [];
                 rockVertices = [];
                 uvs = [];
+                minPos = new THREE.Vector3(999,0,999)
+                maxPos = new THREE.Vector3(-999,1,-999)
             }
         }
 
@@ -244,6 +257,18 @@ class Chunk{
         rock.setAttribute('position', new THREE.Float32BufferAttribute(rockVertices, 3));
         grass.computeVertexNormals();
         rock.computeVertexNormals();
+
+        // bounding sphere for dragon orbit
+        this.boundingSphere = new THREE.Sphere();
+        this.boundingSphere.setFromPoints([minPos, maxPos])
+        this.boundingSphere.translate(pos);
+        // uncomment this to show the bounding sphere
+        // var geometry = new THREE.SphereGeometry(this.boundingSphere.radius); 
+        // var material = new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: true } ); 
+        // var sphere = new THREE.Mesh( geometry, material );
+        // sphere.position.set(this.boundingSphere.center.x, this.boundingSphere.center.y, this.boundingSphere.center.z);
+        // this.model.add(sphere);
+
 
         var grassMesh = new THREE.Mesh(grass, grassMaterial);
         var rockMesh = new THREE.Mesh(rock, rockMaterial); 
