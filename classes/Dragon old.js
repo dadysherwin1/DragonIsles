@@ -310,3 +310,36 @@ class Dragon {
 }
 
 export { Dragon };
+
+
+
+
+/**
+ *     else {
+      var i = 1;
+      for (var segmentNo = 0; segmentNo<(this.bodySegments.length); segmentNo++){
+        //console.log("calculating segment: " + segmentNo);
+        
+        var potentialPos = new THREE.Vector3(this.headXPos[i], this.headYPos[i], this.headZPos[i]);
+        var relativePos = new THREE.Vector3(this.headXPos[0], this.headYPos[0], this.headZPos[0]);
+        if (segmentNo > 0){
+          relativePos = new THREE.Vector3(this.bodySegments[segmentNo - 1].position.x, this.bodySegments[segmentNo - 1].position.y, this.bodySegments[segmentNo - 1].position.z);      
+        }
+        var pathLength = 0;
+        //
+        while (pathLength <= this.idealSegmentDistance){
+          i++;
+          //console.log("checking position: " + i);
+          potentialPos = new THREE.Vector3(this.headXPos[i], this.headYPos[i], this.headZPos[i]);
+          // distance = potentialPos.distanceTo(relativePos);
+          pathLength = pathLength + this.calculateAbsDistance(potentialPos, relativePos);
+        }
+        console.log("found at position: " + i);
+        console.log("array length: " + this.arrayLength);
+        this.bodySegments[segmentNo].position.x = potentialPos.x;
+        this.bodySegments[segmentNo].position.y = potentialPos.y;
+        this.bodySegments[segmentNo].position.z = potentialPos.z;
+      }
+    }
+  }
+ */

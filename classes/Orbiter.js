@@ -20,7 +20,7 @@ class Orbiter {
         this.object.position.x = this.originPos.x + (Math.cos(a)*this.radius);
         this.object.position.z = this.originPos.z + (Math.sin(a)*this.radius);
         this.object.position.y = this.originPos.y;
-        //this.object.rotation.y = -a -90;
+        this.object.rotation.y = -a -90;
     }
 }
 
