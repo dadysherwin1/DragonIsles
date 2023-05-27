@@ -18,6 +18,7 @@ scene.add( camera );
 camera.position.set(0,0,0);
 var Dir = new THREE.Vector3(0,0,0);
 camera.lookAt(Dir.x,Dir.y,Dir.z);
+FlowerBed.Init();
 
 // ambient
 const light = new THREE.AmbientLight( 0xFFFFFF , .6); // soft white light
@@ -62,6 +63,9 @@ function OnUpdate()
   dragon.head.translateY(-5)
 
   dragon.OnUpdate();
+
+
+  FlowerBed.OnUpdate();
 
   renderer.render(scene, camera);
   requestAnimationFrame(OnUpdate);

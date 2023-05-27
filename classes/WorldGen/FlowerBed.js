@@ -1,88 +1,71 @@
 import * as THREE from '../../modules/three.module.js';
 
 class FlowerBed{
+    static startingTime = Date.now();
+    static material;
+
+    static Init() {
+        var texture = new THREE.TextureLoader().load("../../assets/grass/vegetation.png");
+        // texture.minFilter = THREE.NearestFilter;
+        // texture.magFilter = THREE.NearestFilter;
+
+        FlowerBed.material = new THREE.ShaderMaterial({
+            uniforms: {
+                time: { value: 0.0 },
+                texturee: { type: "t", value: texture }, // not a typo
+            },
+            vertexShader: document.getElementById('vertexShaderBillboard').textContent,
+            fragmentShader: document.getElementById('fragmentShaderBillboard').textContent,
+            transparent: true,
+        });
+    }
+
     constructor(pos){
         this.model = new THREE.Object3D();
         this.FlowerBed(pos);
     }
 
     FlowerBed(pos){
+        // var map = new THREE.TextureLoader().load("../../assets/grass/grassColor.png");
+        // map.minFilter = THREE.NearestFilter;
+        // map.magFilter = THREE.NearestFilter;
+        // FlowerBed.material.map = map;
+        // const geometry = new THREE.PlaneGeometry( 3,3 );
+        // const material = new THREE.MeshBasicMaterial( {map: map, transparent: true, side: THREE.DoubleSide} );
+        // const obj = new THREE.Mesh( geometry, material );
+        // obj.position.x = pos.x;
+        // obj.position.y = pos.y;//same pos
+        // obj.position.z = pos.z;
+        // this.model.add(obj);
+
+        // const map = new THREE.TextureLoader().load( '../../assets/grass/grassColor.png' );
+        // map.minFilter = THREE.NearestFilter;
+        // map.magFilter = THREE.NearestFilter;
+        // const material = new THREE.SpriteMaterial( { map: map } );
+        // const sprite = new THREE.Sprite( material );
+        // sprite.position.x = pos.x;
+        // sprite.position.y = pos.y + 2.5;
+        // sprite.position.z = pos.z;
+        // sprite.scale.x = 5;
+        // sprite.scale.y = 5;
+        // // sprite.scale.z = 3;
+        // this.model.add(sprite);
+
         
-        var translation = new THREE.Matrix4();
-        translation.makeTranslation(1, 0, 0);
 
-        var rotation = new THREE.Matrix4();
-        rotation.makeRotationY(2*Math.PI/3);
-
-        var flower0 = this.createFlower();
-        // flower0.applyMatrix4(translation);
-        // var flower1 = this.createFlower();
-        // flower1.applyMatrix4(translation);
-        // flower1.applyMatrix4(rotation);
-        // var flower2 = this.createFlower();
-        // flower2.applyMatrix4(translation);
-        // flower2.applyMatrix4(rotation);
-        // flower2.applyMatrix4(rotation);
-
-        var obj = new THREE.Group();  //adds 
-        
-        obj.add(flower0);
-        // obj.add(flower1);
-        // obj.add(flower2);
+        var geometry = new THREE.PlaneGeometry( 3,4 );
+        var obj = new THREE.Mesh( geometry, FlowerBed.material );
         obj.position.x = pos.x;
-        obj.position.y = pos.y;//same pos
+        obj.position.y = pos.y + 1.5;//same pos
         obj.position.z = pos.z;
         this.model.add(obj);
+
     }
 
-    createFlower(){
-        var leaves = this.createLeaves();
-        var stem = this.createStem();
-        var seeds = this.createSeed();
-        var flower = new THREE.Group()
-        flower.add(leaves);
-        flower.add(stem);
-        flower.add(seeds);
-        var scale = new THREE.Matrix4();
-        scale.makeScale(0.3, 0.3, 0.3);
-        flower.applyMatrix4(scale);
-        flower.position.y +=2;
-        
-        return flower;
+    static OnUpdate() {
+        FlowerBed.material.needsUpdate = true;
+        FlowerBed.material.uniforms.time.value = Date.now() - FlowerBed.startingTime;
     }
-
-    createLeaves(){
-        var sphereMat = new THREE.MeshLambertMaterial();
-        sphereMat.side = THREE.DoubleSide;
-        // sphereMat.wireframe = true;
-        sphereMat.color = new THREE.Color(0xfdf35e);
-        var spherGeo = new THREE.SphereGeometry(5, 6, 2, 0, Math.PI*2, 0, 1);
-        var sphere = new THREE.Mesh(spherGeo, sphereMat);
-        sphere.rotateZ(Math.PI/2);
-        sphere.position.x +=5;
-        return sphere;
-    }
-
-    createStem(){
-        var stemMat = new THREE.MeshLambertMaterial();
-        stemMat.color = new THREE.Color(0x008000);
-        var stemGeo = new THREE.CylinderGeometry(0, 0.5, 15, 3);
-        var stem = new THREE.Mesh(stemGeo, stemMat);
-        stem.position.y -=7.5;
-        
-        return stem;
-    }
-
-    createSeed(){
-        var seedMat = new THREE.MeshLambertMaterial();
-        seedMat.color = new THREE.Color(0x343434);
-        var seedGeo = new THREE.SphereGeometry(1.5, 4, 4);
-        var seed = new THREE.Mesh(seedGeo, seedMat);
-        seed.position.x += 1.5;
-
-        return seed;
-    }
-
 }
 
 export {FlowerBed};
