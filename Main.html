@@ -8,31 +8,35 @@
 
   <script type="x-shader/x-vertex" id="vertexShaderBillboard">
     uniform float time;
+    uniform float swaySpeed;
     varying vec2 vUv;
-    varying vec3 vPosition;
 
     void main()
     {
       // texture
       vUv = uv;
-      vPosition = position;
 
-      // billboard & sway
+      // billboard rotation
       mat4 modelView = modelViewMatrix;
-      vec4 worldPos = modelMatrix * vec4(position, 1);
+      vec4 worldPos = modelMatrix * vec4(1.0,1.0,1.0,1.0);
       modelView[0][0] = 1.0; 
       modelView[0][1] = 0.0; 
       modelView[0][2] = 0.0; 
       modelView[2][0] = 0.0; 
       modelView[2][1] = 0.0; 
       modelView[2][2] = 1.0; 
+
       vec4 P;
       if (position.y > 0.0) {
-        P = modelView * vec4(position.x + sin(time/700.0 + worldPos.x + worldPos.z) / 3.0, position.y, position.z, 1);
+        // top vertices sway
+        float timeOffset = worldPos.x + worldPos.y + worldPos.z; // so they dont sway the same
+        P = modelView * vec4(position.x + sin(time*swaySpeed + timeOffset) / 3.0, position.y, position.z, 1);
       }
-      else {
+      else { 
+        // bottom vertices remain still
         P = modelView * vec4(position.x, position.y, position.z, 1);
       }
+
       gl_Position = projectionMatrix * P;
     }
   </script>
