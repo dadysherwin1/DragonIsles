@@ -36,7 +36,6 @@
         // bottom vertices remain still
         P = modelView * vec4(position.x, position.y, position.z, 1);
       }
-
       gl_Position = projectionMatrix * P;
     }
   </script>
@@ -44,8 +43,9 @@
   <script type="x-shader/x-fragment" id="fragmentShaderBillboard">
     varying vec2 vUv;
     uniform sampler2D texturee;
+    uniform float lightPercentage;
     void main() {
-        gl_FragColor = texture2D(texturee, vUv);
+        gl_FragColor = texture2D(texturee, vUv) * vec4(lightPercentage, lightPercentage, lightPercentage, 1.0);
     }
   </script>
 

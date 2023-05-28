@@ -64,7 +64,7 @@ function OnUpdate()
   dragon.OnUpdate();
 
 
-  FlowerBed.OnUpdate();
+  FlowerBed.OnUpdate(camera);
 
   renderer.render(scene, camera);
   requestAnimationFrame(OnUpdate);
