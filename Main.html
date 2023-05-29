@@ -5,6 +5,50 @@
   </style>
 
   <body>
+
+  <script type="x-shader/x-vertex" id="vertexShaderBillboard">
+    uniform float time;
+    uniform float swaySpeed;
+    varying vec2 vUv;
+
+    void main()
+    {
+      // texture
+      vUv = uv;
+
+      // billboard rotation
+      mat4 modelView = modelViewMatrix;
+      vec4 worldPos = modelMatrix * vec4(1.0,1.0,1.0,1.0);
+      modelView[0][0] = 1.0; 
+      modelView[0][1] = 0.0; 
+      modelView[0][2] = 0.0; 
+      modelView[2][0] = 0.0; 
+      modelView[2][1] = 0.0; 
+      modelView[2][2] = 1.0; 
+
+      vec4 P;
+      if (position.y > 0.0) {
+        // top vertices sway
+        float timeOffset = worldPos.x + worldPos.y + worldPos.z; // so they dont sway the same
+        P = modelView * vec4(position.x + sin(time*swaySpeed + timeOffset) / 3.0, position.y, position.z, 1);
+      }
+      else { 
+        // bottom vertices remain still
+        P = modelView * vec4(position.x, position.y, position.z, 1);
+      }
+      gl_Position = projectionMatrix * P;
+    }
+  </script>
+
+  <script type="x-shader/x-fragment" id="fragmentShaderBillboard">
+    varying vec2 vUv;
+    uniform sampler2D texturee;
+    uniform float lightPercentage;
+    void main() {
+        gl_FragColor = texture2D(texturee, vUv) * vec4(lightPercentage, lightPercentage, lightPercentage, 1.0);
+    }
+  </script>
+
 	<script type="module" src="Main.js"></script>
   </body>
 </html>

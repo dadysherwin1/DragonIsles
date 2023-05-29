@@ -5,6 +5,7 @@ import { Dragon } from "../classes/Dragon.js";
 import { World } from "../classes/WorldGen/World.js";
 import { Tree } from '../classes/WorldGen/Tree.js';
 import { FlowerBed } from '../classes/WorldGen/FlowerBed.js';
+import { BillboardVegetation } from '../classes/WorldGen/BillboardVegetation.js';
 
 // initialization
 var renderer = new THREE.WebGLRenderer();
@@ -62,6 +63,8 @@ function OnUpdate()
   dragon.head.translateY(-5)
 
   dragon.OnUpdate();
+
+  BillboardVegetation.OnUpdate(camera);
 
   renderer.render(scene, camera);
   requestAnimationFrame(OnUpdate);
