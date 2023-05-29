@@ -17,9 +17,9 @@ class Orbiter {
 
     setObjectPos() {
         var a = this.t*this.rotSpeed;
-        this.object.position.x = this.originPos.x + (Math.cos(a)*this.radius);
-        this.object.position.z = this.originPos.z + (Math.sin(a)*this.radius);
-        this.object.position.y = this.originPos.y;
+        this.object.position.x = this.originPos.x + (Math.sin(a)*this.radius) * Math.cos(a/12);
+        this.object.position.z = this.originPos.z + (Math.cos(a)*this.radius);
+        this.object.position.y = this.originPos.y + (Math.sin(a)*100) * Math.sin(a/12);
         //this.object.rotation.y = -a -90;
     }
 }
