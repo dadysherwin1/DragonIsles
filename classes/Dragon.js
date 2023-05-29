@@ -16,9 +16,12 @@ class Dragon {
     this.headYRot = [];
     this.headZRot = [];
 
-    this.segmentSpacing = 2;
+    this.segmentSpacing = 1;
     this.dragonLength = 10;
+    this.counter = 0;
+    this.idealSegmentDistance = 3;
 
+    this.arrayLength = this.dragonLength * this.idealSegmentDistance * 20;
 
     //UpdateColors();
     var materials = this.generateDragonMaterials();
@@ -45,6 +48,8 @@ class Dragon {
     this.updateHeadRotations(this.head, this.updateRate);
     this.positionBodySegments();
     this.rotateHead(this.head); 
+
+    this.counter++;
   }
 
   generateMeshes(){
@@ -209,14 +214,23 @@ class Dragon {
   }
   
   updateHeadPositions(head, updateRate){
-    var arrayLength = this.dragonLength * this.segmentSpacing * updateRate;
+    //var arrayLength = this.dragonLength * this.segmentSpacing * updateRate;
+    
     //if (currFrame % updateRate == 0){
+      head.position.y = head.position.y + 2*Math.sin(0.05*this.counter);
       this.headXPos.unshift(head.position.x);
       this.headYPos.unshift(head.position.y);
       this.headZPos.unshift(head.position.z);
-      this.checkArrayLength(this.headXPos, arrayLength);
-      this.checkArrayLength(this.headYPos, arrayLength);
-      this.checkArrayLength(this.headZPos, arrayLength);
+      this.checkArrayLength(this.headXPos, this.arrayLength);
+      this.checkArrayLength(this.headYPos, this.arrayLength);
+      this.checkArrayLength(this.headZPos, this.arrayLength);
+
+      // if (this.orbiter == null){
+
+      //   console.log("headXPos: " + this.headXPos);
+      //   console.log("headYPos: " + this.headYPos);
+      //   console.log("headZPos: " + this.headZPos);
+      // }
   
   }
   
@@ -240,17 +254,85 @@ class Dragon {
   }
   
   positionBodySegments(){
-    for (var i = 0; i<(this.bodySegments.length); i++){
-      var offset = (i+1)*this.segmentSpacing* this.updateRate;
-      this.bodySegments[i].position.x = this.headXPos[offset];
-      this.bodySegments[i].position.y = this.headYPos[offset];
-      this.bodySegments[i].position.z = this.headZPos[offset];
-  
-      //bodySegments[i].rotation.x = headXRot[offset];
-      this.bodySegments[i].rotation.y = this.headYRot[offset];
-      //bodySegments[i].rotation.z = headZPos[offset];
+  //   if(this.orbiter != null){
+  //     for (var i = 0; i<(this.bodySegments.length); i++){
+  //       var offset = (i+1)*this.segmentSpacing* this.updateRate;
+  //       this.bodySegments[i].position.x = this.headXPos[offset];
+  //       this.bodySegments[i].position.y = this.headYPos[offset];
+  //       this.bodySegments[i].position.z = this.headZPos[offset];
+    
+  //       //bodySegments[i].rotation.x = headXRot[offset];
+  //       this.bodySegments[i].rotation.y = this.headYRot[offset];
+  //       //bodySegments[i].rotation.z = headZPos[offset];
+  //   }
+  // }
+  //   else {
+      var i = 0;
+      for (var segmentNo = 0; segmentNo<(this.bodySegments.length); segmentNo++){
+        //console.log("calculating segment: " + segmentNo);
+        
+        var pos1 = new THREE.Vector3(this.headXPos[i], this.headYPos[i], this.headZPos[i]);
+        var pos2 = new THREE.Vector3(this.headXPos[i+1], this.headYPos[i+1], this.headZPos[i+1]);
+        var pathLength = 0;
+        pathLength = pathLength + this.calculateAbsDistance(pos1, pos2);
+        while (pathLength <= this.idealSegmentDistance){
+          i++;
+          //console.log("checking position: " + i);
+          pos1 = new THREE.Vector3(this.headXPos[i], this.headYPos[i], this.headZPos[i]);
+          pos2 = new THREE.Vector3(this.headXPos[i+1], this.headYPos[i+1], this.headZPos[i+1]);
+          // distance = potentialPos.distanceTo(relativePos);
+          pathLength = pathLength + this.calculateAbsDistance(pos1, pos2);
+        }
+        // if (segmentNo == this.bodySegments.length-1){
+        //   console.log("segment number: " + segmentNo);
+        //   console.log("found at position: " + i);
+        //   console.log("array length: " + this.arrayLength);
+        // }
+        
+        this.bodySegments[segmentNo].position.x = pos2.x;
+        this.bodySegments[segmentNo].position.y = pos2.y;
+        this.bodySegments[segmentNo].position.z = pos2.z;
+      //}
     }
   }
+
+
+  calculateAbsDistance(potentialPos, relativePos){
+    //console.log("potentialPos: " + potentialPos.x + " " + potentialPos.y + " " + potentialPos.z);
+    //console.log("relativePos: " + relativePos.x + " " + relativePos.y + " " + relativePos.z);
+       
+    var a = relativePos.x - potentialPos.x;
+    var b = relativePos.y - potentialPos.y;
+    var c = relativePos.z - potentialPos.z;
+    
+    var distance = Math.sqrt(a * a + b * b + c * c);
+    //console.log("comparing " + potentialPos + " and " + relativePos + ": distance is " + distance);
+    //console.log("distance: " + distance);
+    return distance;
+  }
+
+
+  // setBodyPosition(segmentNo, position){
+  //   this.bodySegments[segmentNo].position = position;
+  // }
+
+  // returnDistance(relativePos, potentialPos){ //relativepos = head/ previous body segment. potentialpos = a value in the array
+  //   return potentialPos.distanceTo(relativePos);
+  // }
+
+  // findOffset(segmentNo){
+  //   var i = 1;
+  //   var potentialPos = (this.headXPos[i], this.headYPos[i], this.headZPos[i]);
+  //   var relativePos = (this.headXPos[0], this.headYPos[0], this.headZPos[0]);
+  //   if (segmentNo != 0){
+  //     relativePos = (bodySegments[segmentNo - 1].position);
+  //   }
+  //   while (potentialPos.distanceTo(relativePos) < this.idealSegmentDistance){
+  //     i++;
+  //     var potentialPos = (this.headXPos[i], this.headYPos[i], this.headZPos[i]);
+  //   }
+  //   this.bodySegments[segmentNo].position = potentialPos;
+  // }
   
   rotateHead(head){
     //head.rotation.x = this.headXRot[0];
