@@ -4,6 +4,30 @@ import { Orbiter } from '../classes/Orbiter.js';
 
 //constructor
 class Dragon {
+
+  // set by lil gui
+  static minLength;
+  static maxLength;
+  static minSpeed;
+  static maxSpeed;
+  static overrideColor;
+  static bodyColor;
+  static bellyColor;
+  static eyeColor;
+  static spikeColor;
+
+  static SetDragonSettings(dragonSettings) { // fired when something changes in lil gui
+    Dragon.minLength = dragonSettings.minLength;
+    Dragon.maxLength = dragonSettings.maxLength;
+    Dragon.minSpeed = dragonSettings.minSpeed;
+    Dragon.maxSpeed = dragonSettings.maxSpeed;
+    Dragon.overrideColor = dragonSettings.overrideColor;
+    Dragon.bodyColor = dragonSettings.bodyColor;
+    Dragon.bellyColor = dragonSettings.bellyColor;
+    Dragon.eyeColor = dragonSettings.eyeColor;
+    Dragon.spikeColor = dragonSettings.spikeColor;
+  }
+
   constructor(scene, pos, r, isOrbiting)
   {
     this.bodySegments = [];
@@ -17,18 +41,18 @@ class Dragon {
     this.headZRot = [];
 
     this.segmentSpacing = 1;
-    this.dragonLength = 10;
+    this.dragonLength = Dragon.minLength + Math.ceil(Math.random() * (Dragon.maxLength - Dragon.minLength))
     this.counter = 0;
     this.idealSegmentDistance = 3;
 
     this.arrayLength = this.dragonLength * this.idealSegmentDistance * 20;
 
     //UpdateColors();
-    var materials = this.generateDragonMaterials();
+    this.materials = this.generateDragonMaterials();
     var meshes = this.generateMeshes();
-    this.head = this.DrawHead(scene, this.DrawSkull(materials, meshes), this.DrawJaw(materials, meshes), this.DrawEyes(materials, meshes));
+    this.head = this.DrawHead(scene, this.DrawSkull(meshes), this.DrawJaw(meshes), this.DrawEyes(meshes));
     this.updateHeadPositions(this.head, this.updateRate);
-    this.DrawBodySegments(scene, materials, meshes);  
+    this.DrawBodySegments(scene, meshes);  
 
     if (isOrbiting) {
       this.orbiter = new Orbiter(this.head, pos, r)
@@ -74,13 +98,13 @@ class Dragon {
     var materials = [];
   
     var material_segments = new THREE.MeshMatcapMaterial();
-    material_segments.color = new THREE.Color(1,1,1);
-    material_segments.color = new THREE.Color(Math.random(), Math.random(),Math.random() );
+    material_segments.color = new THREE.Color(1,1,1); // why do u set these twice? o_o
+    material_segments.color = new THREE.Color(Math.random() / 2, Math.random() / 2, Math.random() / 2 );
     materials.push(material_segments);
   
     var material_eyes = new THREE.MeshMatcapMaterial();
     material_eyes.color = new THREE.Color(1,1,1);
-    material_eyes.color = new THREE.Color(Math.random(), Math.random(),Math.random() );
+    material_eyes.color = new THREE.Color(Math.random() / 2 + .5, Math.random() / 2 + .5, Math.random() / 2 + .5 );
     materials.push(material_eyes);
   
     var material_spikes = new THREE.MeshMatcapMaterial();
@@ -90,26 +114,45 @@ class Dragon {
   
     var material_belly = new THREE.MeshMatcapMaterial();
     material_belly.color = new THREE.Color(1,1,1);
-    material_belly.color = new THREE.Color(Math.random(), Math.random(),Math.random() );
+    material_belly.color = new THREE.Color(Math.random() / 2 + .5, Math.random() / 2 + .5, Math.random() / 2 + .5 );
     materials.push(material_belly);
   
     return materials;
   }
   
   UpdateColors(){ //updates the colors so that it automatically changes when you edit the colors in the GUI
-    
+    if (Dragon.overrideColor) { // selected colors
+      this.materials[0].color = new THREE.Color(Dragon.bodyColor[0],Dragon.bodyColor[1],Dragon.bodyColor[2]);
+      this.materials[1].color = new THREE.Color(Dragon.eyeColor[0],Dragon.eyeColor[1],Dragon.eyeColor[2]);
+      this.materials[2].color = new THREE.Color(Dragon.spikeColor[0],Dragon.spikeColor[1],Dragon.spikeColor[2]);
+      this.materials[3].color = new THREE.Color(Dragon.bellyColor[0],Dragon.bellyColor[1],Dragon.bellyColor[2]);
+    }
+    else { // random colors
+      var newMaterials = this.generateDragonMaterials();
+      this.materials[0].color = newMaterials[0].color;
+      this.materials[1].color = newMaterials[1].color;
+      this.materials[2].color = newMaterials[2].color;
+      this.materials[3].color = newMaterials[3].color;
+    }
+  }
+
+  UpdateSpeed(){ //updates the speed so that it automatically changes when you edit the speed in the GUI
+    this.orbiter.setSpeed(Dragon.minSpeed, Dragon.maxSpeed);
   }
   
-  DrawSkull(materials, meshes){ //creates the circular skull
-    var skull = new THREE.Mesh(meshes[0],materials[0]);
+  DrawSkull(meshes){ //creates the circular skull
+    var skull = new THREE.Mesh(meshes[0],this.materials[0]);
     return skull;
   }
   
-  DrawEyes(materials, meshes){ //creates the two eyes
+  DrawEyes(meshes){ //creates the two eyes
     var eyes = [];
   
-    var eye1 = new THREE.Mesh(meshes[1],materials[1]);
-    var eye2 = new THREE.Mesh(meshes[1],materials[1]);
+    var eye1 = new THREE.Mesh(meshes[1],this.materials[1]);
+    var eye2 = new THREE.Mesh(meshes[1],this.materials[1]);
+
+    eye1.name = "eye"; // name it so we can color it later
+    eye2.name = "eye";
   
     //moves the eyes up vertically
     var traEY = new THREE.Matrix4();
@@ -132,8 +175,8 @@ class Dragon {
     return eyes;
   }
   
-  DrawJaw(materials, meshes){ //creates the jaw/mouth
-    var jaw = new THREE.Mesh(meshes[3], materials[0]);
+  DrawJaw(meshes){ //creates the jaw/mouth
+    var jaw = new THREE.Mesh(meshes[3], this.materials[0]);
   
     //rotate the jaw 90 degrees
     var rotateJaw = new THREE.Matrix4();
@@ -162,13 +205,14 @@ class Dragon {
     return head;
   }
   
-  DrawBodySegments(scene, materials, meshes){ //creates all the body segments
+  DrawBodySegments(scene, meshes){ //creates all the body segments
     for (var i = 0; i<(this.dragonLength-1); i++){
 
-      this.bodySegments[i] = new THREE.Mesh(meshes[0],materials[0]); //adds a body segnemt to the i'th element in the bodySegments array
+      this.bodySegments[i] = new THREE.Mesh(meshes[0],this.materials[0]); //adds a body segnemt to the i'th element in the bodySegments array
 
       //adds belly colour
-      var bellySegment = new THREE.Mesh(meshes[0], materials[3]);
+      var bellySegment = new THREE.Mesh(meshes[0], this.materials[3]);
+      bellySegment.name = "belly"; // name it so we can color it later
       //moves the belly piece down a bit
       var transB = new THREE.Matrix4();
       transB.makeTranslation(0,-0.5,0);
@@ -185,7 +229,8 @@ class Dragon {
        *  BACK SPIKES/TAIL
        *///adds back spikes to 2/3rds of the body
       if (i<(this.dragonLength)/3){
-        var backSpike = new THREE.Mesh(meshes[2],materials[2]);
+        var backSpike = new THREE.Mesh(meshes[2],this.materials[2]);
+        backSpike.name = "spike"; // name it so we can color it later
         //scene.add(backSpike);
         //moves spike up a bit
         var traSpike = new THREE.Matrix4();

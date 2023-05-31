@@ -13,10 +13,10 @@ class Chunk{
     static maxHeight = 35;
     static avgIslandSize = 235; // this is opposite
 
-    static grassUVStretchMult = 4
-    static rockUVStretchMult = 4
+    static grassColor;
+    static rockColor;
+    static treeFrequency;
 
-    // dont touch
     static killHeight = 1 - (Chunk.islandFreq * 2);
     static perlinVegetation = new Perlin(Chunk.avgIslandSize);
 
@@ -31,13 +31,17 @@ class Chunk{
         this.boundingSphere; // use this for dragon orbits
     }
 
-    static ChangeSettings(chunkSettings) {
-        Chunk.size = chunkSettings.clusterSize;
-        Chunk.subd = chunkSettings.vertexDensity;
-        Chunk.islandFreq = chunkSettings.landToAirRatio;
-        Chunk.avgIslandSize = chunkSettings.perlinFrequency;
-        Chunk.maxHeight = chunkSettings.islandMaxHeight;
-        Chunk.killHeight = 1 - (Chunk.islandFreq * 2);
+    static ChangeSettings(chunkSettings, vegetationSettings) {
+        // Chunk.size = chunkSettings.clusterSize;
+        Chunk.subd = chunkSettings.avgSize;
+        // Chunk.islandFreq = chunkSettings.landToAirRatio;
+        // Chunk.avgIslandSize = chunkSettings.perlinFrequency;
+        Chunk.maxHeight = chunkSettings.maxHeight;
+        // Chunk.killHeight = 1 - (Chunk.islandFreq * 2);
+        Chunk.grassColor = chunkSettings.grassColor;
+        Chunk.rockColor = chunkSettings.rockColor;
+
+        Chunk.treeFrequency = vegetationSettings.treeFrequency;
     }
 
     GetPerlin(x, y) {
@@ -127,8 +131,8 @@ class Chunk{
                     rockVertices.push(vertice.x, rockHeight,vertice.z)
 
                     // set UV
-                    const u = x / Chunk.grassUVStretchMult;
-                    const v = z / Chunk.grassUVStretchMult;
+                    const u = x / 4;
+                    const v = z / 4;
                     uvs.push(u,v);
                 }
             }
@@ -156,13 +160,12 @@ class Chunk{
             const pos = new THREE.Vector3(x,y,z);
             var perlinHeightFlo = this.perlinFlower.noise(x/Chunk.subd*Chunk.size, z/Chunk.subd*Chunk.size);
             var perlinHeightVegetation = Chunk.perlinVegetation.noise(x/Chunk.subd*Chunk.size, z/Chunk.subd*Chunk.size);
-            if(Math.random() < (1/Chunk.subd) && y > 5)                
+            if(Math.random() < Chunk.treeFrequency && y > 5)                
             {                                               
                 this.model.add(new Tree(pos).model);  //Adds tree to chunk  
                 // this.model.add(new FlowerBed(pos).model);
             }
-
-            if (perlinHeightVegetation < -0.5 && y > 0) {
+            else if (perlinHeightVegetation < -0.5 && y > 0) {
                 this.model.add(new BillboardVegetation(pos).model);
             }
             else if (perlinHeightFlo < -0.5 && y > 0) {
@@ -249,16 +252,18 @@ class Chunk{
         textureAo.wrapT = THREE.RepeatWrapping;
 
         // material
-        const grassMaterial = new THREE.MeshPhongMaterial(
+        const grassMaterial = new THREE.MeshLambertMaterial(
         {
-            // color: new THREE.Color(0,100/255,0),
-            map : texture,
-            normalMap : textureNormal,
-            specularMap : textureSpecular,
-            aoMap : textureAo
+            color: Chunk.grassColor,
+
+            // commented cause we want a cartoony art style
+            // map : texture,
+            // normalMap : textureNormal,
+            // specularMap : textureSpecular,
+            // aoMap : textureAo
         }
         );
-        const rockMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(50/255,50/255,50/255)});
+        const rockMaterial = new THREE.MeshMatcapMaterial({color: Chunk.rockColor});
         grassMaterial.side = THREE.FrontSide;
         rockMaterial.side = THREE.BackSide;
         

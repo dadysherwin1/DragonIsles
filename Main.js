@@ -24,31 +24,105 @@ var world;
 
 // lil gui
 const gui = new GUI();
+
+const dragonFolder = gui.addFolder('Dragons 🐉')
+var dragonSettings = {
+  minLength: 5,
+  maxLength: 10,
+  minSpeed: 5,
+  maxSpeed: 20,
+
+  overrideColor: false,
+  bodyColor: [ 0.2, 0.9, 0.4 ],
+  bellyColor: [1, 1, 1],
+  eyeColor: [0.5, 0.5, 0.5],
+  spikeColor: [1, 0.5, 0.5],
+
+}
+dragonFolder.add(dragonSettings, 'minLength', 3, 12, 1).listen().onChange(value => {
+  if (value > dragonSettings.maxLength)
+    dragonSettings.maxLength = value;
+  Dragon.SetDragonSettings(dragonSettings);
+  world.RespawnDragons(scene);
+})
+dragonFolder.add(dragonSettings, 'maxLength', 3, 12, 1).listen().onChange(value => {
+  if (value < dragonSettings.minLength)
+    dragonSettings.minLength = value;
+  Dragon.SetDragonSettings(dragonSettings);
+  world.RespawnDragons(scene);
+})
+dragonFolder.add(dragonSettings, 'minSpeed', 3, 100, 1).listen().onChange(value => {
+  if (value > dragonSettings.maxSpeed)
+    dragonSettings.maxSpeed = value;
+  Dragon.SetDragonSettings(dragonSettings);
+  world.UpdateDragonSpeed();
+})
+dragonFolder.add(dragonSettings, 'maxSpeed', 3, 100, 1).listen().onChange(value => {
+  if (value < dragonSettings.minSpeed)
+    dragonSettings.minSpeed = value;
+  Dragon.SetDragonSettings(dragonSettings);
+  world.UpdateDragonSpeed();
+})
+dragonFolder.add(dragonSettings, 'overrideColor').onChange(value => {
+  Dragon.SetDragonSettings(dragonSettings);
+  world.UpdateDragonColors();
+});
+dragonFolder.addColor(dragonSettings, 'bodyColor').onChange(color => {
+  Dragon.SetDragonSettings(dragonSettings);
+  world.UpdateDragonColors();
+});
+dragonFolder.addColor(dragonSettings, 'bellyColor').onChange(color => {
+  Dragon.SetDragonSettings(dragonSettings);
+  world.UpdateDragonColors();
+});
+dragonFolder.addColor(dragonSettings, 'eyeColor').onChange(color => {
+  Dragon.SetDragonSettings(dragonSettings);
+  world.UpdateDragonColors();
+});
+dragonFolder.addColor(dragonSettings, 'spikeColor').onChange(color => {
+  Dragon.SetDragonSettings(dragonSettings);
+  world.UpdateDragonColors();
+});
+Dragon.SetDragonSettings(dragonSettings);
+
+const chunkFolder = gui.addFolder('Islands 🏝️')
+var chunkSettings = {
+  maxHeight: 35,
+  // clusterSize: 300,
+  avgSize: 70,
+  // landToAirRatio: 0.3,
+  // perlinFrequency: 235,
+  grassColor: 'rgb(0,100,0)',
+  rockColor: 'rgb(100,100,100)',
+}
+chunkFolder.add(chunkSettings, 'maxHeight', 5, 100, 1);
+// chunkFolder.add(chunkSettings, 'clusterSize', 10, 1000, 5);
+chunkFolder.add(chunkSettings, 'avgSize', 10, 200, 5);
+// chunkFolder.add(chunkSettings, 'landToAirRatio', 0, 0.75, 0.01);
+// chunkFolder.add(chunkSettings, 'perlinFrequency', 100, 300, 5);
+chunkFolder.addColor(chunkSettings, 'grassColor');
+chunkFolder.addColor(chunkSettings, 'rockColor');
+
+const vegetationFolder = gui.addFolder('Vegetation 🌱')
+var vegetationSettings = {
+  treeFrequency: 0.015,
+  treeColor: [0.2, 0.5, 0.2],
+}
+vegetationFolder.add(vegetationSettings, 'treeFrequency', 0, .25, 0.005);
+vegetationFolder.addColor(vegetationSettings, 'treeColor');
+
+const worldFolder = gui.addFolder('World 🌎')
 var worldSettings = {
-  worldSize: 600,
+  worldSize: 700,
   numOfClusters: 10,
   regenIslands: function() { 
     world.Destroy(scene);
-    world = new World(scene, worldSettings, chunkSettings);
+    world = new World(scene, worldSettings, chunkSettings, vegetationSettings);
   }
 }
-gui.add(worldSettings, 'worldSize', 100, 5000, 20); // min, max, step
-gui.add(worldSettings, 'numOfClusters', 0, 25, 1);
-gui.add(worldSettings, 'regenIslands');
-
-const chunkFolder = gui.addFolder('Island Clusters')
-var chunkSettings = {
-  islandMaxHeight: 35,
-  clusterSize: 300,
-  vertexDensity: 70,
-  landToAirRatio: 0.3,
-  perlinFrequency: 235,
-}
-chunkFolder.add(chunkSettings, 'islandMaxHeight', 5, 100, 1);
-chunkFolder.add(chunkSettings, 'clusterSize', 10, 1000, 5);
-chunkFolder.add(chunkSettings, 'vertexDensity', 10, 200, 5);
-chunkFolder.add(chunkSettings, 'landToAirRatio', 0, 0.75, 0.01);
-chunkFolder.add(chunkSettings, 'perlinFrequency', 100, 300, 5);
+worldFolder.add(worldSettings, 'worldSize', 100, 5000, 20); // min, max, step
+worldFolder.add(worldSettings, 'numOfClusters', 0, 25, 1);
+worldFolder.add(worldSettings, 'regenIslands');
 
 // ambient
 const light = new THREE.AmbientLight( 0xFFFFFF , .6); // soft white light
@@ -75,7 +149,7 @@ controls.movementSpeed = 0.8;
 const dragon = new Dragon(scene);
 
 // world
-var world = new World(scene, worldSettings, chunkSettings);
+var world = new World(scene, worldSettings, chunkSettings, vegetationSettings);
 
 // Update
 function OnUpdate()

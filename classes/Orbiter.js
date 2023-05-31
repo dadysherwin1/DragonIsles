@@ -5,7 +5,7 @@ class Orbiter {
         this.object = obj;          // THREE.Object3D
         this.originPos = origin;    // THREE.Vector3
         this.radius = radius;
-        this.rotSpeed = 1;
+        this.rotSpeed = .1;
         this.t = Math.random()*360;
         this.clock = new THREE.Clock();
     }
@@ -13,6 +13,10 @@ class Orbiter {
     onUpdate() {
         this.t += this.clock.getDelta();
         this.setObjectPos();
+    }
+
+    setSpeed(minSpeed, maxSpeed) {
+        this.rotSpeed = (minSpeed + Math.ceil(Math.random() * (maxSpeed - minSpeed))) / 100;
     }
 
     setObjectPos() {

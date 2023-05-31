@@ -1,6 +1,14 @@
 import * as THREE from '../../modules/three.module.js';
 
 class Tree{
+
+    static color;
+
+    static SetColor(color) {
+        console.log(color);
+        Tree.color = new THREE.Color(color[0], color[1], color[2]);
+    }
+
     constructor(pos){
         this.model = new THREE.Object3D();
         this.CreateTree(pos);
@@ -31,7 +39,7 @@ class Tree{
     createLeaves(){ //Creates a few cones of vary sizes as the leaves of the tree (numbers are currently hardcoded)
         var leavesList = new THREE.Object3D();
         var coneMat = new THREE.MeshLambertMaterial();
-        coneMat.color = new THREE.Color(0x8fce00);
+        coneMat.color = Tree.color;
         for(let i = 1; i < 4; i++){
             var coneGeo = new THREE.ConeGeometry(6-i, 6);
             var newCone = new THREE.Mesh(coneGeo, coneMat);
