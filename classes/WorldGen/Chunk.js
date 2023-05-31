@@ -1,6 +1,7 @@
 import * as THREE from '../../modules/three.module.js';
 import {Tree} from './Tree.js';
 import {FlowerBed} from './FlowerBed.js';
+import {BillboardVegetation} from './BillboardVegetation.js';
 import {Perlin} from './Perlin.js';
 
 class Chunk{
@@ -17,6 +18,7 @@ class Chunk{
 
     // dont touch
     static killHeight = 1 - (Chunk.islandFreq * 2);
+    static perlinVegetation = new Perlin(Chunk.avgIslandSize);
 
     constructor(pos)
     {
@@ -144,6 +146,7 @@ class Chunk{
             const z = vertices[i+2];
             const pos = new THREE.Vector3(x,y,z);
             var perlinHeightFlo = this.perlinFlower.noise(x/Chunk.subd*Chunk.size, z/Chunk.subd*Chunk.size);
+            var perlinHeightVegetation = Chunk.perlinVegetation.noise(x/Chunk.subd*Chunk.size, z/Chunk.subd*Chunk.size);
             if(Math.random() < (1/Chunk.subd) && y > 5)                
             {                                               
                 this.model.add(new Tree(pos).model);  //Adds tree to chunk  
@@ -153,6 +156,10 @@ class Chunk{
             
             if (perlinHeightFlo < -0.5 && y > 0) {
                 this.model.add(new FlowerBed(pos).model);
+            }
+
+            if (perlinHeightVegetation < -0.5 && y > 0) {
+                this.model.add(new BillboardVegetation(pos).model);
             }
 
         }
