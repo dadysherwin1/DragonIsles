@@ -42,7 +42,6 @@ class FlowerBed{
         var flower = new THREE.Group()
         flower.add(leaves);
         flower.add(stem);
-        flower.add(seeds);
         var scale = new THREE.Matrix4();
         scale.makeScale(0.3, 0.3, 0.3);
         flower.applyMatrix4(scale);
@@ -52,23 +51,34 @@ class FlowerBed{
     }
 
     createLeaves(){
-        var sphereMat = new THREE.MeshLambertMaterial();
+        var texture = new THREE.TextureLoader().load("../../assets/grass/Sunflower_Front.png");
+        // var texture = new THREE.TextureLoader().load("../../assets/grass/test_texture.jpeg");
+        // texture.repeat = repeatNum;
+        // texture.wrapS = THREE.RepeatWrapping;
+        // texture.wrapT = THREE.RepeatWrapping;
+
+        var sphereMat = new THREE.MeshLambertMaterial({
+            map : texture,
+            transparent: true
+        });
         sphereMat.side = THREE.DoubleSide;
         // sphereMat.wireframe = true;
         sphereMat.color = new THREE.Color(0xfdf35e);
-        var spherGeo = new THREE.SphereGeometry(5, 6, 2, 0, Math.PI*2, 0, 1);
+        var spherGeo = new THREE.PlaneGeometry(7,7);
         var sphere = new THREE.Mesh(spherGeo, sphereMat);
         sphere.rotateZ(Math.PI/2);
-        sphere.position.x +=5;
+        sphere.rotateX(Math.PI/4);
+        sphere.rotateY(Math.PI/6);
+        sphere.position.y +=4;
         return sphere;
     }
 
     createStem(){
         var stemMat = new THREE.MeshLambertMaterial();
-        stemMat.color = new THREE.Color(0x008000);
+        stemMat.color = new THREE.Color(0x006000);
         var stemGeo = new THREE.CylinderGeometry(0, 0.5, 15, 3);
         var stem = new THREE.Mesh(stemGeo, stemMat);
-        stem.position.y -=7.5;
+        stem.position.y -=4;
         
         return stem;
     }
