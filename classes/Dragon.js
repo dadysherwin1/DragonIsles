@@ -56,15 +56,23 @@ class Dragon {
     var meshes = [];
   
     var segment = new THREE.IcosahedronGeometry(2,0);
+    segment.castShadow = true; 
+    segment.receiveShadow = true; 
     meshes.push(segment);
       
     var eye = new THREE.IcosahedronGeometry(0.6,1);
+    eye.castShadow = false; 
+    eye.receiveShadow = true; 
     meshes.push(eye);
   
     var spike = new THREE.ConeGeometry(1,4,5);
+    spike.castShadow = true; 
+    spike.receiveShadow = true; 
     meshes.push(spike);
   
     var jawObject = new THREE.CylinderGeometry(1,1.8,4,6);
+    jawObject.castShadow = true; 
+    jawObject.receiveShadow = true; 
     meshes.push(jawObject);
   
     return meshes;
@@ -73,22 +81,22 @@ class Dragon {
   generateDragonMaterials(){ //0-body, 1-eyes, 2-spikes, 3-belly
     var materials = [];
   
-    var material_segments = new THREE.MeshMatcapMaterial();
+    var material_segments = new THREE.MeshLambertMaterial();
     material_segments.color = new THREE.Color(1,1,1);
     material_segments.color = new THREE.Color(Math.random(), Math.random(),Math.random() );
     materials.push(material_segments);
   
-    var material_eyes = new THREE.MeshMatcapMaterial();
+    var material_eyes = new THREE.MeshLambertMaterial();
     material_eyes.color = new THREE.Color(1,1,1);
     material_eyes.color = new THREE.Color(Math.random(), Math.random(),Math.random() );
     materials.push(material_eyes);
   
-    var material_spikes = new THREE.MeshMatcapMaterial();
+    var material_spikes = new THREE.MeshLambertMaterial();
     material_spikes.color = new THREE.Color(1,1,1);
     material_spikes.color = new THREE.Color(Math.random(), Math.random(),Math.random() );
     materials.push(material_spikes);
   
-    var material_belly = new THREE.MeshMatcapMaterial();
+    var material_belly = new THREE.MeshLambertMaterial();
     material_belly.color = new THREE.Color(1,1,1);
     material_belly.color = new THREE.Color(Math.random(), Math.random(),Math.random() );
     materials.push(material_belly);

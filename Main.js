@@ -10,6 +10,8 @@ import { BillboardVegetation } from '../classes/WorldGen/BillboardVegetation.js'
 // initialization
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.BasicShadowMap;
 document.body.appendChild(renderer.domElement);
 var scene = new THREE.Scene();
 var width = window.innerWidth;
@@ -24,9 +26,11 @@ camera.lookAt(Dir.x,Dir.y,Dir.z);
 const light = new THREE.AmbientLight( 0xFFFFFF , .6); // soft white light
 scene.add( light );
 
-// point light
-const light2 = new THREE.PointLight( 0xFFFFFF, 1.5, 0);
+// point light has been changed to direcitonal light. works better maaaaaybe????
+//const light2 = new THREE.PointLight( 0xFFFFFF, 1.5, 0);
+const light2 = new THREE.DirectionalLight( 0xFFFFFF, 1.5, 0);
 light2.position.set( 500,500,500);
+light2.castShadow = true;
 scene.add( light2 );
 
 // fly controls

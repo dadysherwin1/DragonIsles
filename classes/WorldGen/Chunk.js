@@ -278,6 +278,10 @@ class Chunk{
 
         var grassMesh = new THREE.Mesh(grass, grassMaterial);
         var rockMesh = new THREE.Mesh(rock, rockMaterial); 
+        grassMesh.castShadow = true; 
+        grassMesh.receiveShadow = true; 
+        rockMesh.castShadow = true; 
+        rockMesh.receiveShadow = true; 
         this.model.add(grassMesh);
         this.model.add(rockMesh);
 

@@ -5,7 +5,7 @@ class Orbiter {
         this.object = obj;          // THREE.Object3D
         this.originPos = origin;    // THREE.Vector3
         this.radius = radius;
-        this.rotSpeed = 1;
+        this.rotSpeed = 0.5;
         this.t = Math.random()*360;
         this.clock = new THREE.Clock();
     }
