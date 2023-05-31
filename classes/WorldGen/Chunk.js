@@ -262,6 +262,7 @@ class Chunk{
         this.boundingSphere = new THREE.Sphere();
         this.boundingSphere.setFromPoints([minPos, maxPos])
         this.boundingSphere.translate(pos);
+        this.boundingSphere.translate(new THREE.Vector3(-highestPoint.y/2.0));
         // uncomment this to show the bounding sphere
         // var geometry = new THREE.SphereGeometry(this.boundingSphere.radius); 
         // var material = new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: true } ); 
