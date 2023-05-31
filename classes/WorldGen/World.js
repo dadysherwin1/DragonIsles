@@ -2,23 +2,24 @@ import * as THREE from '../../modules/three.module.js';
 import { Dragon } from "../../classes/Dragon.js";
 import { Chunk } from "./Chunk.js";
 
-var areaLength = 600;
-var numOfChunks = 10;
-
 class World {
 
-    constructor(scene) {
+    constructor(scene, worldSettings, chunkSettings) {
         this.scene = scene;
         this.dragons = [];
+        this.chunks = [];
+        
+        Chunk.ChangeSettings(chunkSettings);
 
-        for (var i = 0; i < numOfChunks; i++) {
-            var posX = Math.random() * areaLength - areaLength / 2;
-            var posY = Math.random() * areaLength - areaLength / 2;
-            var posZ = Math.random() * areaLength - areaLength / 2;
+        for (var i = 0; i < worldSettings.numOfClusters; i++) {
+            var posX = Math.random() * worldSettings.worldSize - worldSettings.worldSize / 2;
+            var posY = Math.random() * worldSettings.worldSize - worldSettings.worldSize / 2;
+            var posZ = Math.random() * worldSettings.worldSize - worldSettings.worldSize / 2;
             var pos = new THREE.Vector3(posX, posY, posZ);
 
             const chunk = this.CreateChunk(pos);
             scene.add(chunk.model);
+            this.chunks.push(chunk);
             
             // var dragonPos = chunk.highestPoint.add(new THREE.Vector3(0,5,0));
             // var d = new Dragon(scene, dragonPos, 10 + (Math.random()*10), true);
@@ -46,6 +47,15 @@ class World {
     Update() {
         this.dragons.forEach(dragon => {
             dragon.OnUpdate(this.scene);
+        });
+    }
+
+    Destroy(scene) {
+        this.dragons.forEach(dragon => {
+            dragon.ClearBodySegments(scene);
+        });
+        this.chunks.forEach(chunk => {
+            chunk.Destroy(scene);
         });
     }
 }

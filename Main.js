@@ -6,6 +6,7 @@ import { World } from "../classes/WorldGen/World.js";
 import { Tree } from '../classes/WorldGen/Tree.js';
 import { FlowerBed } from '../classes/WorldGen/FlowerBed.js';
 import { BillboardVegetation } from '../classes/WorldGen/BillboardVegetation.js';
+import GUI from '../modules/lil-gui.module.min.js';
 
 // initialization
 var renderer = new THREE.WebGLRenderer();
@@ -19,6 +20,35 @@ scene.add( camera );
 camera.position.set(0,0,0);
 var Dir = new THREE.Vector3(0,0,0);
 camera.lookAt(Dir.x,Dir.y,Dir.z);
+var world;
+
+// lil gui
+const gui = new GUI();
+var worldSettings = {
+  worldSize: 600,
+  numOfClusters: 10,
+  regenIslands: function() { 
+    world.Destroy(scene);
+    world = new World(scene, worldSettings, chunkSettings);
+  }
+}
+gui.add(worldSettings, 'worldSize', 100, 5000, 20); // min, max, step
+gui.add(worldSettings, 'numOfClusters', 0, 25, 1);
+gui.add(worldSettings, 'regenIslands');
+
+const chunkFolder = gui.addFolder('Island Clusters')
+var chunkSettings = {
+  islandMaxHeight: 35,
+  clusterSize: 300,
+  vertexDensity: 70,
+  landToAirRatio: 0.3,
+  perlinFrequency: 235,
+}
+chunkFolder.add(chunkSettings, 'islandMaxHeight', 5, 100, 1);
+chunkFolder.add(chunkSettings, 'clusterSize', 10, 1000, 5);
+chunkFolder.add(chunkSettings, 'vertexDensity', 10, 200, 5);
+chunkFolder.add(chunkSettings, 'landToAirRatio', 0, 0.75, 0.01);
+chunkFolder.add(chunkSettings, 'perlinFrequency', 100, 300, 5);
 
 // ambient
 const light = new THREE.AmbientLight( 0xFFFFFF , .6); // soft white light
@@ -45,7 +75,7 @@ controls.movementSpeed = 0.8;
 const dragon = new Dragon(scene);
 
 // world
-const world = new World(scene);
+var world = new World(scene, worldSettings, chunkSettings);
 
 // Update
 function OnUpdate()

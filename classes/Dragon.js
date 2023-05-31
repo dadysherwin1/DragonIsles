@@ -343,7 +343,7 @@ class Dragon {
   //function to clear the scene
   ClearBodySegments(scene)
   {
-    // scene.remove(head);
+    scene.remove(this.head);
     for (var i = 0; i < this.bodySegments.length; i++) {
       scene.remove(this.bodySegments[i]);
     }

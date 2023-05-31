@@ -31,6 +31,15 @@ class Chunk{
         this.boundingSphere; // use this for dragon orbits
     }
 
+    static ChangeSettings(chunkSettings) {
+        Chunk.size = chunkSettings.clusterSize;
+        Chunk.subd = chunkSettings.vertexDensity;
+        Chunk.islandFreq = chunkSettings.landToAirRatio;
+        Chunk.avgIslandSize = chunkSettings.perlinFrequency;
+        Chunk.maxHeight = chunkSettings.islandMaxHeight;
+        Chunk.killHeight = 1 - (Chunk.islandFreq * 2);
+    }
+
     GetPerlin(x, y) {
         return this.perlin.noise(x/Chunk.subd*Chunk.size, y/Chunk.subd*Chunk.size);
     }
@@ -283,6 +292,10 @@ class Chunk{
 
         highestPoint.add(pos);
         return highestPoint;
+    }
+
+    Destroy(scene) {
+        scene.remove(this.model);
     }
 
 }
