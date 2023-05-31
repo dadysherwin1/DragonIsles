@@ -38,7 +38,7 @@ class FlowerBed{
     createFlower(){
         var leaves = this.createLeaves();
         var stem = this.createStem();
-        var seeds = this.createSeed();
+        // var seeds = this.createSeed();
         var flower = new THREE.Group()
         flower.add(leaves);
         flower.add(stem);
@@ -51,7 +51,9 @@ class FlowerBed{
     }
 
     createLeaves(){
-        var texture = new THREE.TextureLoader().load("../../assets/grass/Sunflower_Front.png");
+        var texture = new THREE.TextureLoader().load("../../assets/grass/Sunflower_Front_2.png");
+        texture.minFilter = THREE.NearestFilter;
+        texture.magFilter = THREE.NearestFilter;
         // var texture = new THREE.TextureLoader().load("../../assets/grass/test_texture.jpeg");
         // texture.repeat = repeatNum;
         // texture.wrapS = THREE.RepeatWrapping;
@@ -83,15 +85,15 @@ class FlowerBed{
         return stem;
     }
 
-    createSeed(){
-        var seedMat = new THREE.MeshLambertMaterial();
-        seedMat.color = new THREE.Color(0x343434);
-        var seedGeo = new THREE.SphereGeometry(1.5, 4, 4);
-        var seed = new THREE.Mesh(seedGeo, seedMat);
-        seed.position.x += 1.5;
+    // createSeed(){
+    //     var seedMat = new THREE.MeshLambertMaterial();
+    //     seedMat.color = new THREE.Color(0x343434);
+    //     var seedGeo = new THREE.SphereGeometry(1.5, 4, 4);
+    //     var seed = new THREE.Mesh(seedGeo, seedMat);
+    //     seed.position.x += 1.5;
 
-        return seed;
-    }
+    //     return seed;
+    // }
 
 }
 
