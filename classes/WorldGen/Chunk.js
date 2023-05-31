@@ -153,13 +153,11 @@ class Chunk{
                 // this.model.add(new FlowerBed(pos).model);
             }
 
-            
-            if (perlinHeightFlo < -0.5 && y > 0) {
-                this.model.add(new FlowerBed(pos).model);
-            }
-
             if (perlinHeightVegetation < -0.5 && y > 0) {
                 this.model.add(new BillboardVegetation(pos).model);
+            }
+            else if (perlinHeightFlo < -0.5 && y > 0) {
+                this.model.add(new FlowerBed(pos).model);
             }
 
         }
