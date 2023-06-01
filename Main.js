@@ -179,8 +179,10 @@ scene.add( light );
 const light2 = new THREE.PointLight( 0xFFFFFF, 1.5, 0);
 // const light2 = new THREE.DirectionalLight( 0xFFFFFF, 1.5, 0);
 light2.position.set( 100,500,100);
+light2.shadow.mapSize.width = 2048;
+light2.shadow.mapSize.height = 2048;
 light2.shadow.camera.near = 0.1; // default
-light2.shadow.camera.far = 4000; // default
+light2.shadow.camera.far = 1000; // default
 light2.castShadow = true;
 var spheremat = new THREE.MeshBasicMaterial({color : 'yellow'});
 var spherGeo = new THREE.SphereGeometry(15);
