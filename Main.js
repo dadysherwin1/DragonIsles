@@ -112,7 +112,13 @@ var vegetationSettings = {
   treeMaxWidth: 6,
   treeConeAmount: 3,
   treeColor: [0.2, 0.5, 0.2],
+
+  grassFrequency: 0.25,
+  grassSwaySpeed: 1,
+
+  flowerFrequency: 0.25,
 }
+BillboardVegetation.SetVegetationSettings(vegetationSettings);
 vegetationFolder.add(vegetationSettings, 'treeFrequency', 0, .25, 0.005);
 vegetationFolder.add(vegetationSettings, 'treeMinHeight', 5, 30, 0.5).listen().onChange(value => {
   if (value > vegetationSettings.treeMaxHeight)
@@ -132,6 +138,11 @@ vegetationFolder.add(vegetationSettings, 'treeMaxWidth', 0.1, 20, 0.1).listen().
 })
 vegetationFolder.add(vegetationSettings, 'treeConeAmount', 1, 10, 1);
 vegetationFolder.addColor(vegetationSettings, 'treeColor');
+vegetationFolder.add(vegetationSettings, 'grassSwaySpeed', 0, 4, 0.05).onChange(value => {
+  BillboardVegetation.SetVegetationSettings(vegetationSettings);
+})
+vegetationFolder.add(vegetationSettings, 'grassFrequency', 0, 1, 0.01);
+vegetationFolder.add(vegetationSettings, 'flowerFrequency', 0, 1, 0.01);
 
 const worldFolder = gui.addFolder('World 🌎')
 var worldSettings = {

@@ -13,6 +13,11 @@ class BillboardVegetation {
         fragmentShader: document.getElementById('fragmentShaderBillboard').textContent,
         transparent: true,
     });
+    static swaySpeed;
+
+    static SetVegetationSettings(vegetationSettings) {
+        BillboardVegetation.swaySpeed = vegetationSettings.grassSwaySpeed
+    }
 
     constructor(pos){
         this.model = new THREE.Object3D();
@@ -28,7 +33,7 @@ class BillboardVegetation {
     static OnUpdate(camera) {
         // for swaying
         BillboardVegetation.material.needsUpdate = true;
-        BillboardVegetation.material.uniforms.time.value = Date.now() - BillboardVegetation.startingTime;
+        BillboardVegetation.material.uniforms.time.value = (Date.now() - BillboardVegetation.startingTime) * BillboardVegetation.swaySpeed;
 
         var normal = new THREE.Vector3();
         camera.getWorldDirection(normal);

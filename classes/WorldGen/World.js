@@ -2,6 +2,7 @@ import * as THREE from '../../modules/three.module.js';
 import { Dragon } from "../../classes/Dragon.js";
 import { Chunk } from "./Chunk.js";
 import {Tree} from './Tree.js';
+import {BillboardVegetation} from './BillboardVegetation.js';
 
 class World {
 

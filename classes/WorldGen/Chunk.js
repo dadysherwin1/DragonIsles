@@ -16,6 +16,8 @@ class Chunk{
     static grassColor;
     static rockColor;
     static treeFrequency;
+    static flowerFrequency;
+    static grassFrequency;
 
     static killHeight = 1 - (Chunk.islandFreq * 2);
     static perlinVegetation = new Perlin(Chunk.avgIslandSize);
@@ -42,6 +44,8 @@ class Chunk{
         Chunk.rockColor = chunkSettings.rockColor;
 
         Chunk.treeFrequency = vegetationSettings.treeFrequency;
+        Chunk.flowerFrequency = vegetationSettings.flowerFrequency;
+        Chunk.grassFrequency = vegetationSettings.grassFrequency;
     }
 
     GetPerlin(x, y) {
@@ -160,17 +164,14 @@ class Chunk{
             const pos = new THREE.Vector3(x,y,z);
             var perlinHeightFlo = this.perlinFlower.noise(x/Chunk.subd*Chunk.size, z/Chunk.subd*Chunk.size);
             var perlinHeightVegetation = Chunk.perlinVegetation.noise(x/Chunk.subd*Chunk.size, z/Chunk.subd*Chunk.size);
-            if(Math.random() < Chunk.treeFrequency && y > 5)                
-            {                                               
+            if(Math.random() < Chunk.treeFrequency * 70/Chunk.subd && y > 5)                                                          
                 this.model.add(new Tree(pos).model);  //Adds tree to chunk  
-                // this.model.add(new FlowerBed(pos).model);
-            }
-            else if (perlinHeightVegetation < -0.5 && y > 0) {
+            else if (perlinHeightVegetation < Chunk.grassFrequency*2-1  && y > 0)
+            // else if(Math.random() < Chunk.grassFrequency * 70/Chunk.subd && y > 5) 
                 this.model.add(new BillboardVegetation(pos).model);
-            }
-            else if (perlinHeightFlo < -0.5 && y > 0) {
+            else if (perlinHeightFlo < Chunk.flowerFrequency*2-1 && y > 0)
+            // else if(Math.random() < Chunk.flowerFrequency * 70/Chunk.subd && y > 5)   
                 this.model.add(new FlowerBed(pos).model);
-            }
 
         }
 
