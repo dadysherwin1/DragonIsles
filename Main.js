@@ -7,6 +7,10 @@ import { Tree } from '../classes/WorldGen/Tree.js';
 import { FlowerBed } from '../classes/WorldGen/FlowerBed.js';
 import { BillboardVegetation } from '../classes/WorldGen/BillboardVegetation.js';
 import GUI from '../modules/lil-gui.module.min.js';
+import { EffectComposer } from './modules/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPixelatedPass } from './modules/examples/jsm/postprocessing/RenderPixelatedPass.js';
+import { ShaderPass } from './modules/examples/jsm/postprocessing/ShaderPass.js';
+import { GammaCorrectionShader } from './modules/examples/jsm/shaders/GammaCorrectionShader.js';
 
 // initialization
 var renderer = new THREE.WebGLRenderer();
@@ -23,6 +27,15 @@ camera.position.set(0,0,0);
 var Dir = new THREE.Vector3(0,0,0);
 camera.lookAt(Dir.x,Dir.y,Dir.z);
 var world;
+
+var composer = new EffectComposer( renderer );
+			var params = { pixelSize: 0.1, normalEdgeStrength: 0.01, depthEdgeStrength: 0.01, pixelAlignedPanning: true };
+      const renderPixelatedPass = new RenderPixelatedPass( 6, scene, camera, params );
+      renderPixelatedPass.setPixelSize(3);
+			composer.addPass( renderPixelatedPass );
+
+			const outputPass = new ShaderPass( GammaCorrectionShader );
+			composer.addPass( outputPass );
 
 // lil gui
 const gui = new GUI();
@@ -170,13 +183,19 @@ var worldSettings = {
 worldFolder.add(worldSettings, 'worldSize', 100, 5000, 20); // min, max, step
 worldFolder.add(worldSettings, 'numOfClusters', 0, 25, 1);
 worldFolder.add(worldSettings, 'regenIslands');
+gui.add( params, 'pixelSize' ).min( 1 ).max( 16 ).step( 1 )
+				.onChange( () => {
+
+					renderPixelatedPass.setPixelSize( params.pixelSize );
+
+				} );
 
 // ambient
 const light = new THREE.AmbientLight( 0xFFFFFF , .6); // soft white light
 scene.add( light );
 
 // point light has been changed to direcitonal light. works better maaaaaybe????
-const light2 = new THREE.PointLight( 0xFFFFFF, 1.5, 0);
+const light2 = new THREE.PointLight( 0xFFFFFF, 1, 0);
 // const light2 = new THREE.DirectionalLight( 0xFFFFFF, 1.5, 0);
 light2.position.set( 100,500,100);
 light2.shadow.mapSize.width = 2048;
@@ -228,6 +247,7 @@ function OnUpdate()
 
   renderer.render(scene, camera);
   requestAnimationFrame(OnUpdate);
+  composer.render();
 }
 requestAnimationFrame(OnUpdate);
 

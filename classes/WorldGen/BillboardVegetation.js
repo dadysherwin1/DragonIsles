@@ -27,6 +27,7 @@ class BillboardVegetation {
         obj.position.x = pos.x;
         obj.position.y = pos.y + 1.5;//same pos
         obj.position.z = pos.z;
+        this.model.castShadow = true;
         this.model.add(obj);
     }
 

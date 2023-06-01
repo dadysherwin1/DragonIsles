@@ -252,8 +252,22 @@ class Chunk{
         textureAo.wrapS = THREE.RepeatWrapping;
         textureAo.wrapT = THREE.RepeatWrapping;
 
+        //loads the gradiant maps for toonshader
+        const threeTone = new THREE.TextureLoader().load('../../assets/gradientMaps/threeTone.jpg')
+        threeTone.minFilter = THREE.NearestFilter
+        threeTone.magFilter = THREE.NearestFilter
+
+        const fourTone = new THREE.TextureLoader().load('../../assets/gradientMaps/fourTone.jpg')
+        fourTone.minFilter = THREE.NearestFilter
+        fourTone.magFilter = THREE.NearestFilter
+
+        const fiveTone = new THREE.TextureLoader().load('../../assets/gradientMaps/fiveTone.jpg')
+        fiveTone.minFilter = THREE.NearestFilter
+        fiveTone.magFilter = THREE.NearestFilter
+
+
         // material
-        const grassMaterial = new THREE.MeshLambertMaterial(
+        const grassMaterial = new THREE.MeshToonMaterial(
         {
             color: Chunk.grassColor,
 
@@ -264,9 +278,11 @@ class Chunk{
             // aoMap : textureAo
         }
         );
-        const rockMaterial = new THREE.MeshMatcapMaterial({color: Chunk.rockColor});
+        const rockMaterial = new THREE.MeshToonMaterial({color: Chunk.rockColor});
         grassMaterial.side = THREE.FrontSide;
+        grassMaterial.gradientMap = fiveTone;
         rockMaterial.side = THREE.BackSide;
+        rockMaterial.gradientMap = fiveTone;
         
         // geometry
         grass.setIndex(indices);

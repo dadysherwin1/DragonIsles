@@ -43,7 +43,7 @@ class Dragon {
     this.segmentSpacing = 1;
     this.dragonLength = Dragon.minLength + Math.ceil(Math.random() * (Dragon.maxLength - Dragon.minLength))
     this.counter = 0;
-    this.idealSegmentDistance = 3;
+    this.idealSegmentDistance = 2;
 
     this.arrayLength = this.dragonLength * this.idealSegmentDistance * 20;
 
@@ -103,26 +103,36 @@ class Dragon {
   }
   
   generateDragonMaterials(){ //0-body, 1-eyes, 2-spikes, 3-belly
+
+    const fiveTone = new THREE.TextureLoader().load('../assets/gradientMaps/fiveTone.jpg')
+        fiveTone.minFilter = THREE.NearestFilter
+        fiveTone.magFilter = THREE.NearestFilter
+
+
     var materials = [];
   
-    var material_segments = new THREE.MeshLambertMaterial();
+    var material_segments = new THREE.MeshToonMaterial();
     material_segments.color = new THREE.Color(1,1,1); // why do u set these twice? o_o
     material_segments.color = new THREE.Color(Math.random() / 2, Math.random() / 2, Math.random() / 2 );
+    material_segments.gradientMap = fiveTone;
     materials.push(material_segments);
   
-    var material_eyes = new THREE.MeshLambertMaterial();
+    var material_eyes = new THREE.MeshToonMaterial();
     material_eyes.color = new THREE.Color(1,1,1);
     material_eyes.color = new THREE.Color(Math.random() / 2 + .5, Math.random() / 2 + .5, Math.random() / 2 + .5 );
+    material_eyes.gradientMap = fiveTone;
     materials.push(material_eyes);
   
-    var material_spikes = new THREE.MeshLambertMaterial();
+    var material_spikes = new THREE.MeshToonMaterial();
     material_spikes.color = new THREE.Color(1,1,1);
     material_spikes.color = new THREE.Color(Math.random(), Math.random(),Math.random() );
+    material_spikes.gradientMap = fiveTone;
     materials.push(material_spikes);
   
-    var material_belly = new THREE.MeshLambertMaterial();
+    var material_belly = new THREE.MeshToonMaterial();
     material_belly.color = new THREE.Color(1,1,1);
     material_belly.color = new THREE.Color(Math.random() / 2 + .5, Math.random() / 2 + .5, Math.random() / 2 + .5 );
+    material_belly.gradientMap = fiveTone;
     materials.push(material_belly);
   
     return materials;
@@ -268,9 +278,11 @@ class Dragon {
   
   updateHeadPositions(head, updateRate){
     //var arrayLength = this.dragonLength * this.segmentSpacing * updateRate;
-    
-    //if (currFrame % updateRate == 0){
+    if (this.isOrbiting){
       head.position.y = head.position.y + 2*Math.sin(0.05*this.counter);
+    }
+    //if (currFrame % updateRate == 0){
+      
       this.headXPos.unshift(head.position.x);
       this.headYPos.unshift(head.position.y);
       this.headZPos.unshift(head.position.z);
