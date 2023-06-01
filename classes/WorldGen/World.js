@@ -11,7 +11,7 @@ class World {
         this.chunks = [];
         
         Chunk.ChangeSettings(chunkSettings, vegetationSettings);
-        Tree.SetColor(vegetationSettings.treeColor);
+        Tree.SetTreeSettings(vegetationSettings);
 
         for (var i = 0; i < worldSettings.numOfClusters; i++) {
             var posX = Math.random() * worldSettings.worldSize - worldSettings.worldSize / 2;

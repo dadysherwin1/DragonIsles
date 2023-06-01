@@ -106,9 +106,31 @@ chunkFolder.addColor(chunkSettings, 'rockColor');
 const vegetationFolder = gui.addFolder('Vegetation 🌱')
 var vegetationSettings = {
   treeFrequency: 0.015,
+  treeMinHeight: 5,
+  treeMaxHeight: 15,
+  treeMinWidth: 3,
+  treeMaxWidth: 6,
+  treeConeAmount: 3,
   treeColor: [0.2, 0.5, 0.2],
 }
 vegetationFolder.add(vegetationSettings, 'treeFrequency', 0, .25, 0.005);
+vegetationFolder.add(vegetationSettings, 'treeMinHeight', 5, 30, 0.5).listen().onChange(value => {
+  if (value > vegetationSettings.treeMaxHeight)
+    vegetationSettings.treeMaxHeight = value;
+})
+vegetationFolder.add(vegetationSettings, 'treeMaxHeight', 5, 30, 0.5).listen().onChange(value => {
+  if (value < vegetationSettings.treeMinHeight)
+    vegetationSettings.treeMinHeight = value;
+})
+vegetationFolder.add(vegetationSettings, 'treeMinWidth', 0.1, 20, 0.1).listen().onChange(value => {
+  if (value > vegetationSettings.treeMaxWidth)
+    vegetationSettings.treeMaxWidth = value;
+})
+vegetationFolder.add(vegetationSettings, 'treeMaxWidth', 0.1, 20, 0.1).listen().onChange(value => {
+  if (value < vegetationSettings.treeMinWidth)
+    vegetationSettings.treeMinWidth = value;
+})
+vegetationFolder.add(vegetationSettings, 'treeConeAmount', 1, 10, 1);
 vegetationFolder.addColor(vegetationSettings, 'treeColor');
 
 const worldFolder = gui.addFolder('World 🌎')
