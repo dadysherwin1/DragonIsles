@@ -3,6 +3,7 @@ import { Dragon } from "../../classes/Dragon.js";
 import { Chunk } from "./Chunk.js";
 import {Tree} from './Tree.js';
 import {BillboardVegetation} from './BillboardVegetation.js';
+import { FlowerBed } from './FlowerBed.js';
 
 class World {
 
@@ -13,6 +14,7 @@ class World {
         
         Chunk.ChangeSettings(chunkSettings, vegetationSettings);
         Tree.SetTreeSettings(vegetationSettings);
+        FlowerBed.changeFlowerSettings(vegetationSettings);
 
         for (var i = 0; i < worldSettings.numOfClusters; i++) {
             var posX = Math.random() * worldSettings.worldSize - worldSettings.worldSize / 2;

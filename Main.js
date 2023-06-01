@@ -97,7 +97,7 @@ var chunkSettings = {
 }
 chunkFolder.add(chunkSettings, 'maxHeight', 5, 100, 1);
 // chunkFolder.add(chunkSettings, 'clusterSize', 10, 1000, 5);
-chunkFolder.add(chunkSettings, 'avgSize', 10, 200, 5);
+chunkFolder.add(chunkSettings, 'avgSize', 10, 100, 5);
 // chunkFolder.add(chunkSettings, 'landToAirRatio', 0, 0.75, 0.01);
 // chunkFolder.add(chunkSettings, 'perlinFrequency', 100, 300, 5);
 chunkFolder.addColor(chunkSettings, 'grassColor');
@@ -117,6 +117,8 @@ var vegetationSettings = {
   grassSwaySpeed: 1,
 
   flowerFrequency: 0.25,
+  flowerMinHeight: 5,
+  flowerMaxHeight: 15,
 }
 BillboardVegetation.SetVegetationSettings(vegetationSettings);
 vegetationFolder.add(vegetationSettings, 'treeFrequency', 0, .25, 0.005);
@@ -143,6 +145,16 @@ vegetationFolder.add(vegetationSettings, 'grassSwaySpeed', 0, 4, 0.05).onChange(
 })
 vegetationFolder.add(vegetationSettings, 'grassFrequency', 0, 1, 0.01);
 vegetationFolder.add(vegetationSettings, 'flowerFrequency', 0, 1, 0.01);
+
+vegetationFolder.add(vegetationSettings, 'flowerMinHeight', 2, 30, 0.5).listen().onChange(value => {
+  if (value > vegetationSettings.flowerMaxHeight)
+    vegetationSettings.flowerMaxHeight = value;
+})
+vegetationFolder.add(vegetationSettings, 'flowerMaxHeight', 2, 30, 0.5).listen().onChange(value => {
+  if (value < vegetationSettings.flowerMinHeight)
+    vegetationSettings.flowerMinHeight = value;
+})
+
 
 const worldFolder = gui.addFolder('World 🌎')
 var worldSettings = {
