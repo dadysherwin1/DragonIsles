@@ -29,9 +29,9 @@ camera.lookAt(Dir.x,Dir.y,Dir.z);
 var world;
 
 var composer = new EffectComposer( renderer );
-			var params = { pixelSize: 0.1, normalEdgeStrength: 0.01, depthEdgeStrength: 0.01, pixelAlignedPanning: true };
+			var params = { pixelSize: 1, normalEdgeStrength: 0.01, depthEdgeStrength: 0.01, pixelAlignedPanning: true };
       const renderPixelatedPass = new RenderPixelatedPass( 6, scene, camera, params );
-      renderPixelatedPass.setPixelSize(3);
+      renderPixelatedPass.setPixelSize(1);
 			composer.addPass( renderPixelatedPass );
 
 			const outputPass = new ShaderPass( GammaCorrectionShader );
@@ -236,7 +236,9 @@ function OnUpdate()
 
   // dragon moving
   dragon.head.position.copy(camera.position)
+  
   dragon.head.rotation.copy(camera.rotation)
+
   dragon.head.updateMatrix();
   dragon.head.translateZ(-30)
   dragon.head.translateY(-5)
