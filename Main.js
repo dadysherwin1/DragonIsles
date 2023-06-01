@@ -242,7 +242,9 @@ function OnUpdate()
 
   // dragon moving
   dragon.head.position.copy(camera.position)
+  
   dragon.head.rotation.copy(camera.rotation)
+
   dragon.head.updateMatrix();
   dragon.head.translateZ(-30)
   dragon.head.translateY(-5)
