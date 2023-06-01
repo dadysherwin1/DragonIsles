@@ -29,9 +29,9 @@ camera.lookAt(Dir.x,Dir.y,Dir.z);
 var world;
 
 var composer = new EffectComposer( renderer );
-			var params = { pixelSize: 0.1, normalEdgeStrength: 0.01, depthEdgeStrength: 0.01, pixelAlignedPanning: true };
+			var params = { pixelSize: 1, normalEdgeStrength: 0.01, depthEdgeStrength: 0.01, pixelAlignedPanning: true };
       const renderPixelatedPass = new RenderPixelatedPass( 6, scene, camera, params );
-      renderPixelatedPass.setPixelSize(3);
+      renderPixelatedPass.setPixelSize(1);
 			composer.addPass( renderPixelatedPass );
 
 			const outputPass = new ShaderPass( GammaCorrectionShader );
@@ -81,22 +81,27 @@ dragonFolder.add(dragonSettings, 'maxSpeed', 3, 100, 1).listen().onChange(value 
 dragonFolder.add(dragonSettings, 'overrideColor').onChange(value => {
   Dragon.SetDragonSettings(dragonSettings);
   world.UpdateDragonColors();
+  dragon.UpdateColors();
 });
 dragonFolder.addColor(dragonSettings, 'bodyColor').onChange(color => {
   Dragon.SetDragonSettings(dragonSettings);
   world.UpdateDragonColors();
+  dragon.UpdateColors();
 });
 dragonFolder.addColor(dragonSettings, 'bellyColor').onChange(color => {
   Dragon.SetDragonSettings(dragonSettings);
   world.UpdateDragonColors();
+  dragon.UpdateColors();
 });
 dragonFolder.addColor(dragonSettings, 'eyeColor').onChange(color => {
   Dragon.SetDragonSettings(dragonSettings);
   world.UpdateDragonColors();
+  dragon.UpdateColors();
 });
 dragonFolder.addColor(dragonSettings, 'spikeColor').onChange(color => {
   Dragon.SetDragonSettings(dragonSettings);
   world.UpdateDragonColors();
+  dragon.UpdateColors();
 });
 Dragon.SetDragonSettings(dragonSettings);
 
@@ -126,7 +131,7 @@ var vegetationSettings = {
   treeMinWidth: 3,
   treeMaxWidth: 6,
   treeConeAmount: 3,
-  treeColor: [0.2, 0.5, 0.2],
+  treeColor: [0, 0.12, 0],
 
   grassFrequency: 0.25,
   grassSwaySpeed: 1,
@@ -183,12 +188,13 @@ var worldSettings = {
 worldFolder.add(worldSettings, 'worldSize', 100, 5000, 20); // min, max, step
 worldFolder.add(worldSettings, 'numOfClusters', 0, 25, 1);
 worldFolder.add(worldSettings, 'regenIslands');
-gui.add( params, 'pixelSize' ).min( 1 ).max( 16 ).step( 1 )
-				.onChange( () => {
 
-					renderPixelatedPass.setPixelSize( params.pixelSize );
-
-				} );
+var pixelSettings = {
+  pixelSize: 1,
+}
+gui.add(pixelSettings, "pixelSize", 1, 10, .2).onChange(value => {
+  renderPixelatedPass.setPixelSize( pixelSettings.pixelSize );
+});
 
 // ambient
 const light = new THREE.AmbientLight( 0xFFFFFF , .6); // soft white light
