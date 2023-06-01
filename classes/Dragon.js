@@ -218,10 +218,6 @@ class Dragon {
     head.add(jaw);
     head.add(eyes[0]);
     head.add(eyes[1]);
-    // var rotateHead = new THREE.Matrix4();
-    // rotateHead.makeRotationZ(-Math.PI/2);
-    // head.applyMatrix4(rotateHead);
-  
   
     scene.add(head); //adds the entire head to the scene
     return head;
@@ -305,9 +301,9 @@ class Dragon {
   
   updateHeadRotations(head, updateRate){
     var arrayLength = this.dragonLength * this.segmentSpacing * updateRate;
-    var xrot = Math.atan2(this.headZPos[0]-this.headZPos[1], this.headYPos[0]-this.headYPos[1]) - Math.PI/2;
-    var yrot = Math.atan2(this.headXPos[0]-this.headXPos[1], this.headZPos[0]-this.headZPos[1]) - Math.PI/2;
-    var zrot = Math.atan2(this.headXPos[0]-this.headXPos[1], this.headYPos[0]-this.headYPos[1]); //- Math.PI/2;
+    var xrot = Math.atan2(this.headZPos[0]-this.headZPos[1],this.headYPos[0]-this.headYPos[1]) - Math.PI/2 ;
+    var yrot = Math.atan2(this.headXPos[0]-this.headXPos[1],this.headZPos[0]-this.headZPos[1]) - Math.PI/2;
+    var zrot = Math.atan2(this.headXPos[0]-this.headXPos[1], this.headYPos[0]-this.headYPos[1]) - Math.PI/2;
     this.headXRot.unshift(xrot);
     this.headYRot.unshift(yrot);
     this.headZRot.unshift(zrot);
@@ -361,11 +357,6 @@ class Dragon {
         this.bodySegments[segmentNo].position.x = pos2.x;
         this.bodySegments[segmentNo].position.y = pos2.y;
         this.bodySegments[segmentNo].position.z = pos2.z;
-
-        // this.bodySegments[segmentNo].rotation.x = this.headXRot[i];
-        // this.bodySegments[segmentNo].rotation.y = this.headYRot[i];
-        this.bodySegments[segmentNo].rotation.set(this.headXRot[i], this.headYRot[i], 0 );
-        //this.bodySegments[segmentNo].rotation.z = this.headZRot[i];
       //}
     }
   }
