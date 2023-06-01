@@ -47,6 +47,8 @@ class Tree{
         cylinderMat.color = new THREE.Color(0xce6900);
         var cyliderGeo = new THREE.CylinderGeometry(this.coneWidth/5, this.coneWidth/2.5, this.trunkLength);
         var base = new THREE.Mesh(cyliderGeo, cylinderMat);
+        base.castShadow = true; 
+        base.receiveShadow = true; 
         return base;
     }
 
@@ -59,6 +61,8 @@ class Tree{
             var coneGeo = new THREE.ConeGeometry(this.coneWidth - this.coneWidth*(i/(Tree.coneAmount+1)), height);
             var newCone = new THREE.Mesh(coneGeo, coneMat);
             newCone.position.y += height + (i+1)*height/2;
+            newCone.castShadow = true; 
+            newCone.receiveShadow = true; 
             leavesList.add(newCone);
         }
         return leavesList;

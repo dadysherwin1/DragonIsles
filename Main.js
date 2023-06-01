@@ -11,6 +11,8 @@ import GUI from '../modules/lil-gui.module.min.js';
 // initialization
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.BasicShadowMap;
 document.body.appendChild(renderer.domElement);
 var scene = new THREE.Scene();
 var width = window.innerWidth;
@@ -173,9 +175,18 @@ worldFolder.add(worldSettings, 'regenIslands');
 const light = new THREE.AmbientLight( 0xFFFFFF , .6); // soft white light
 scene.add( light );
 
-// point light
+// point light has been changed to direcitonal light. works better maaaaaybe????
 const light2 = new THREE.PointLight( 0xFFFFFF, 1.5, 0);
-light2.position.set( 500,500,500);
+// const light2 = new THREE.DirectionalLight( 0xFFFFFF, 1.5, 0);
+light2.position.set( 100,500,100);
+light2.shadow.camera.near = 0.1; // default
+light2.shadow.camera.far = 4000; // default
+light2.castShadow = true;
+var spheremat = new THREE.MeshBasicMaterial({color : 'yellow'});
+var spherGeo = new THREE.SphereGeometry(15);
+var sphere = new THREE.Mesh(spherGeo, spheremat);
+sphere.position.set(100, 500, 100);
+scene.add(sphere);  
 scene.add( light2 );
 
 // fly controls
